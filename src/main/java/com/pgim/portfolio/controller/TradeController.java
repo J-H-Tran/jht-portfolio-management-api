@@ -38,7 +38,7 @@ public class TradeController {
     }
 
     @PostMapping
-    public Trade addTrade(@Valid @RequestBody TradeDTO tradeDTO) {
+    public TradeDTO addTrade(@Valid @RequestBody TradeDTO tradeDTO) {
         return tradeService.addTrade(tradeDTO);
     }
 

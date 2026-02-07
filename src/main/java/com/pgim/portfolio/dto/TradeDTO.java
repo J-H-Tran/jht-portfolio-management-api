@@ -21,4 +21,11 @@ public class TradeDTO {
 
     @NotNull
     private Long portfolioId;
+
+    public void setDetails(String details) {
+        if (details == null || details.isBlank()) {
+            throw new IllegalArgumentException("Details cannot be null or blank");
+        }
+        this.assetName = details;
+    }
 }

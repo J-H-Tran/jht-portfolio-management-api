@@ -26,15 +26,25 @@ public class TradeService {
     }
 
     public Page<TradeDTO> getTradesByPortfolioId(Long portfolioId, Pageable pageable) {
-        return tradeRepository.findByPortfolioId(portfolioId, pageable)
+        logger.info("Fetching trades for portfolioId: {}", portfolioId);
+        Page<TradeDTO> trades = tradeRepository.findByPortfolioId(portfolioId, pageable)
+                .map(tradeMapper::toDTO);
+        logger.info("Fetched trades: {}", trades.getContent());
+        return trades;
+    }
+
+    public Page<TradeDTO> getAllTrades(Pageable pageable) {
+        logger.info("Fetching all trades");
+        return tradeRepository.findAll(pageable)
                 .map(tradeMapper::toDTO);
     }
 
-    public Trade addTrade(TradeDTO tradeDTO) {
+    public TradeDTO addTrade(TradeDTO tradeDTO) {
         Trade trade =tradeMapper.toEntity(tradeDTO);
 
         logger.info("Adding trade: {}", tradeDTO);
-        return tradeRepository.save(trade);
+        Trade savedTrade = tradeRepository.save(trade);
+        return tradeMapper.toDTO(savedTrade);
     }
 
     public TradeDTO updateTrade(Long id, TradeDTO updateTradeDTO) {

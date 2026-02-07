@@ -6,11 +6,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Data;
 
 import java.math.BigDecimal;
 
 @Entity
+@Table(name = "trade")
 @Data // Lombok annotation to generate getters, setters, toString, equals, and hashCode
 public class Trade {
 
