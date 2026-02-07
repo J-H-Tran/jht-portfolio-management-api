@@ -1,7 +1,7 @@
 package com.pgim.portfolio.dto;
 
-import org.mapstruct.Mapper;
 import com.pgim.portfolio.entity.Portfolio;
+import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface PortfolioMapper {
