@@ -2,8 +2,10 @@ package com.pgim.portfolio.controller;
 
 import com.pgim.portfolio.dto.PortfolioDTO;
 import com.pgim.portfolio.service.PortfolioService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,10 +22,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class PortfolioController {
     // CRUD: Create, Read, Update, Delete
     private final PortfolioService portfolioService;
+    private final PagedResourcesAssembler<PortfolioDTO> pagedResourcesAssembler;
 
     //@Autowired
-    public PortfolioController(PortfolioService portfolioService) {
+    public PortfolioController(
+            PortfolioService portfolioService,
+            PagedResourcesAssembler<PortfolioDTO> pagedResourcesAssembler
+    ) {
         this.portfolioService = portfolioService;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
     }
 
     // Equivalent -> @RequestMapping(value=”/home”, method = RequestMethod.GET), Read
@@ -33,12 +40,17 @@ public class PortfolioController {
         return ResponseEntity.ok(portfolios);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<PortfolioDTO> getPortfolioById(@PathVariable Long id) {
+        PortfolioDTO portfolio = portfolioService.getPortfolioById(id);
+        return ResponseEntity.ok(portfolio);
+    }
+
     // Create
     @PostMapping(value = "/save")
-    public ResponseEntity<PortfolioDTO> createPortfolio(@RequestBody PortfolioDTO portfolioDTO) {
+    public ResponseEntity<PortfolioDTO> createPortfolio(@Valid @RequestBody PortfolioDTO portfolioDTO) {
         PortfolioDTO createdPortfolio = portfolioService.createPortfolio(portfolioDTO);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(createdPortfolio);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdPortfolio);
     }
 
     // Update - to update existing data

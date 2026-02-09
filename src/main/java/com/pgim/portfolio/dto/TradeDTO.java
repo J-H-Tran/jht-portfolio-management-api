@@ -1,15 +1,24 @@
 package com.pgim.portfolio.dto;
 
+import com.pgim.portfolio.entity.Trade;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Data
 public class TradeDTO {
+    private Long id;
+
     @NotNull
-    private String assetName;
+    private Long portfolioId;
+
+    @NotNull
+    private String tradeReferenceId;
+
+    private Trade.TradeType tradeType;
 
     @NotNull
     @Positive
@@ -19,13 +28,7 @@ public class TradeDTO {
     @Positive
     private BigDecimal price;
 
-    @NotNull
-    private Long portfolioId;
+    private Trade.TradeStatus status;
 
-    public void setDetails(String details) {
-        if (details == null || details.isBlank()) {
-            throw new IllegalArgumentException("Details cannot be null or blank");
-        }
-        this.assetName = details;
-    }
+    private LocalDateTime createdAt;
 }

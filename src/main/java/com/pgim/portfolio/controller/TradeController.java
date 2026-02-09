@@ -27,6 +27,12 @@ public class TradeController {
         this.tradeService = tradeService;
     }
 
+    @GetMapping("/{ed}")
+    public ResponseEntity<TradeDTO> getTradeById(@PathVariable Long id) {
+        TradeDTO trade = tradeService.getTradeById(id);
+        return ResponseEntity.ok(trade);
+    }
+
     @GetMapping("/portfolio/{portfolioId}")
     public ResponseEntity<Page<TradeDTO>> getTradesByPortfolioId(
             @PathVariable Long portfolioId,
@@ -41,6 +47,12 @@ public class TradeController {
     public ResponseEntity<TradeDTO> addTrade(@Valid @RequestBody TradeDTO tradeDTO) {
         TradeDTO createdTrade = tradeService.addTrade(tradeDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdTrade);
+    }
+
+    @PostMapping
+    public ResponseEntity<TradeDTO> submitTrade(@Valid @RequestBody TradeDTO tradeDTO) {
+        TradeDTO submittedTrade = tradeService.submitTrade(tradeDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(submittedTrade);
     }
 
     @PutMapping("/update/{id}")
