@@ -13,7 +13,7 @@ import java.util.Scanner;
 
 @SpringBootApplication(scanBasePackages = "com.pgim.portfolio")
 @EnableJpaRepositories(basePackages = "com.pgim.portfolio.repository")
-public class PortfolioApiApplication implements CommandLineRunner {
+public class PortfolioApiApplication /*implements CommandLineRunner*/ {
     private final TradeService tradeService;
 
     public PortfolioApiApplication(TradeService tradeService) {
@@ -24,37 +24,37 @@ public class PortfolioApiApplication implements CommandLineRunner {
         SpringApplication.run(PortfolioApiApplication.class, args);
     }
 
-    @Override
-    public void run(String... args) {
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Welcome to the Trade CLI.");
-        while (true) {
-            System.out.println("\nChoose an operation:");
-            System.out.println("1. List Trades by Portfolio ID");
-            System.out.println("2. Add a Trade");
-            System.out.println("3. Update a Trade");
-            System.out.println("4. Delete a Trade");
-            System.out.println("5. Exit");
-
-            int choice = sc.nextInt();
-            sc.nextLine(); // Consume newline
-            try {
-                switch (choice) {
-                    case 1 -> listTrades(sc);
-                    case 2 -> addTrade(sc);
-                    case 3 -> updateTrade(sc);
-                    case 4 -> deleteTrade(sc);
-                    case 5 -> {
-                        System.out.println("Exiting CLI. Goodbye...");
-                        return;
-                    }
-                    default -> System.out.println("Invalid choice. Please try again.");
-                }
-            } catch (Exception e) {
-                System.out.println("Error: " + e.getMessage());
-            }
-        }
-    }
+//    @Override
+//    public void run(String... args) {
+//        Scanner sc = new Scanner(System.in);
+//        System.out.println("Welcome to the Trade CLI.");
+//        while (true) {
+//            System.out.println("\nChoose an operation:");
+//            System.out.println("1. List Trades by Portfolio ID");
+//            System.out.println("2. Add a Trade");
+//            System.out.println("3. Update a Trade");
+//            System.out.println("4. Delete a Trade");
+//            System.out.println("5. Exit");
+//
+//            int choice = sc.nextInt();
+//            sc.nextLine(); // Consume newline
+//            try {
+//                switch (choice) {
+//                    case 1 -> listTrades(sc);
+//                    case 2 -> addTrade(sc);
+//                    case 3 -> updateTrade(sc);
+//                    case 4 -> deleteTrade(sc);
+//                    case 5 -> {
+//                        System.out.println("Exiting CLI. Goodbye...");
+//                        return;
+//                    }
+//                    default -> System.out.println("Invalid choice. Please try again.");
+//                }
+//            } catch (Exception e) {
+//                System.out.println("Error: " + e.getMessage());
+//            }
+//        }
+//    }
 
     private void listTrades(Scanner sc) {
         System.out.println("Enter Portfolio ID: ");

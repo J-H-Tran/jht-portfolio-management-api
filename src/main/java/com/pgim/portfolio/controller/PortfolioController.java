@@ -4,6 +4,8 @@ import com.pgim.portfolio.dto.PortfolioDTO;
 import com.pgim.portfolio.service.PortfolioService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,27 +28,32 @@ public class PortfolioController {
 
     // Equivalent -> @RequestMapping(value=”/home”, method = RequestMethod.GET), Read
     @GetMapping
-    public Page<PortfolioDTO> getAllPortfolios(Pageable pageable) {
-        return portfolioService.getAllPortfolios(pageable);
+    public ResponseEntity<Page<PortfolioDTO>> getAllPortfolios(Pageable pageable) {
+        Page<PortfolioDTO> portfolios = portfolioService.getAllPortfolios(pageable);
+        return ResponseEntity.ok(portfolios);
     }
 
     // Create
     @PostMapping(value = "/save")
-    public PortfolioDTO createPortfolio(@RequestBody PortfolioDTO portfolioDTO) {
-        return portfolioService.createPortfolio(portfolioDTO);
+    public ResponseEntity<PortfolioDTO> createPortfolio(@RequestBody PortfolioDTO portfolioDTO) {
+        PortfolioDTO createdPortfolio = portfolioService.createPortfolio(portfolioDTO);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(createdPortfolio);
     }
 
     // Update - to update existing data
     @PutMapping(value = "/update/{id}")
-    public PortfolioDTO updatePortfolio(
+    public ResponseEntity<PortfolioDTO> updatePortfolio(
             @PathVariable("id") Long portfolioId,
             @RequestBody PortfolioDTO portfolioDTO
     ) {
-        return portfolioService.updatePortfolio(portfolioId, portfolioDTO);
+        PortfolioDTO updatedPortfolio = portfolioService.updatePortfolio(portfolioId, portfolioDTO);
+        return ResponseEntity.ok(updatedPortfolio);
     }
 
     @DeleteMapping(value = "/delete/{id}")
-    public void deletePortfolio(@PathVariable("id") Long portfolioId) {
+    public ResponseEntity<Void> deletePortfolio(@PathVariable("id") Long portfolioId) {
         portfolioService.deletePortfolio(portfolioId);
+        return ResponseEntity.noContent().build();
     }
 }
