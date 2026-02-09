@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController // under the hood is annotated with @Controller @ResponseBody
-@RequestMapping("/api/portfolios")
+@RequestMapping("v1/api/portfolios")
 public class PortfolioController {
     // CRUD: Create, Read, Update, Delete
     private final PortfolioService portfolioService;

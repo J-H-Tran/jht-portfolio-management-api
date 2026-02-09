@@ -14,10 +14,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
 //                        .requestMatchers(HttpMethod.DELETE).hasRole("ADMIN")  // restrict delete to ADMIN
 //                        .requestMatchers("/admin/**").hasAnyRole("ADMIN")   // restrict admin endpoints to ADMIN
-                        .requestMatchers("/api/portfolios").permitAll()     // unrestrict portfolios
-                        .requestMatchers("/api/portfolios/**").permitAll()  // unrestrict portfolios endpoints
-                        .requestMatchers("/api/trades").permitAll()  // unrestrict portfolios endpoints
-                        .requestMatchers("/api/portfolios/**").permitAll()  // unrestrict portfolios endpoints
+                        .requestMatchers("v1/api/portfolios").permitAll()     // unrestrict portfolios
+                        .requestMatchers("v1/api/portfolios/**").permitAll()  // unrestrict portfolios endpoints
+                        .requestMatchers("v1/api/trades").permitAll()  // unrestrict portfolios endpoints
+                        .requestMatchers("v1/api/portfolios/**").permitAll()  // unrestrict portfolios endpoints
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())   // enable basic auth
