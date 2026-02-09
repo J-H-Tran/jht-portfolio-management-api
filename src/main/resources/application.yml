@@ -21,7 +21,7 @@ server:
 
 logging:
   file:
-    name: application.log
+    name: application/log/application.log
   level:
 #    org.springframework.security: INFO
     org.springframework.security: DEBUG

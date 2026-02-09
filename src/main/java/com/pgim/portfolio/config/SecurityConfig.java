@@ -16,6 +16,8 @@ public class SecurityConfig {
 //                        .requestMatchers("/admin/**").hasAnyRole("ADMIN")   // restrict admin endpoints to ADMIN
                         .requestMatchers("/api/portfolios").permitAll()     // unrestrict portfolios
                         .requestMatchers("/api/portfolios/**").permitAll()  // unrestrict portfolios endpoints
+                        .requestMatchers("/api/trades").permitAll()  // unrestrict portfolios endpoints
+                        .requestMatchers("/api/portfolios/**").permitAll()  // unrestrict portfolios endpoints
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())   // enable basic auth
