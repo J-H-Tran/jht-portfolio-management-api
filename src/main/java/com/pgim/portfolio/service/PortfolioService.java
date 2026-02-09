@@ -36,4 +36,22 @@ public class PortfolioService {
         Portfolio portfolio = portfolioMapper.toEntity(portfolioDTO);
         return portfolioMapper.toDTO(portfolioRepository.save(portfolio));
     }
+
+    public PortfolioDTO updatePortfolio(Long portfolioId, PortfolioDTO portfolioDTO) {
+        // check existing first
+        Portfolio existingPortfolio = portfolioRepository.findById(portfolioId)
+                .orElseThrow(() -> new IllegalArgumentException("Portfolio not found with id: " + portfolioId));
+
+        Portfolio updatedPortfolio = portfolioMapper.toEntity(portfolioDTO);
+        // Ensure id remains the same
+        updatedPortfolio.setId(existingPortfolio.getId());
+        return portfolioMapper.toDTO(portfolioRepository.save(updatedPortfolio));
+    }
+
+    public void deletePortfolio(Long portfolioId) {
+        if (!portfolioRepository.existsById(portfolioId)) {
+            throw new IllegalArgumentException("Portfolio not found with id: " + portfolioId);
+        }
+        portfolioRepository.deleteById(portfolioId);
+    }
 }
