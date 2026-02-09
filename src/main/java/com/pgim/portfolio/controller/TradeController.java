@@ -49,12 +49,14 @@ public class TradeController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdTrade);
     }
 
+    // Create
     @PostMapping
     public ResponseEntity<TradeDTO> submitTrade(@Valid @RequestBody TradeDTO tradeDTO) {
         TradeDTO submittedTrade = tradeService.submitTrade(tradeDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(submittedTrade);
     }
 
+    // Update
     @PutMapping("/update/{id}")
     public ResponseEntity<TradeDTO> updateTrade(@PathVariable Long id, @RequestBody TradeDTO tradeDTO) {
         TradeDTO updatedTrade = tradeService.updateTrade(id, tradeDTO);
