@@ -13,17 +13,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TradeAuditServiceImpl implements TradeAuditService {
-    private final AuditRepository auditRepository;
     private final TradeRepository tradeRepository;
+    private final AuditRepository auditRepository;
     private final TradeAuditMapper tradeAuditMapper;
 
     public TradeAuditServiceImpl(
-            AuditRepository auditRepository,
             TradeRepository tradeRepository,
+            AuditRepository auditRepository,
             TradeAuditMapper tradeAuditMapper
     ) {
-        this.auditRepository = auditRepository;
         this.tradeRepository = tradeRepository;
+        this.auditRepository = auditRepository;
         this.tradeAuditMapper = tradeAuditMapper;
     }
 
@@ -35,10 +35,8 @@ public class TradeAuditServiceImpl implements TradeAuditService {
     @Transactional("auditTransactionManager")
     public void logTradeEvent(Long tradeId, String action, String details) {
         // Enforce referential integrity at the application layer
-        var tradeOpt = tradeRepository.findById(tradeId);
-        if (tradeOpt.isEmpty()) {
-            throw new IllegalArgumentException("Trade not found for audit logging: " + tradeId);
-        }
+        tradeRepository.findById(tradeId)
+                .orElseThrow(() -> new IllegalArgumentException("Trade not found with id: " + tradeId));
         TradeAudit audit = new TradeAudit();
         audit.setTradeId(tradeId);
         audit.setAction(TradeAudit.AuditAction.valueOf(action));

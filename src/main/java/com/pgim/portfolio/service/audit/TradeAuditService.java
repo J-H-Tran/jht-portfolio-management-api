@@ -7,5 +7,4 @@ public interface TradeAuditService {
     void logTradeEvent(Long tradeId, String action, String details);
     List<TradeAuditDTO> getAuditLogsForTrade(Long tradeId);
     TradeAuditDTO getAuditLogById(Long auditId);
-
 }
