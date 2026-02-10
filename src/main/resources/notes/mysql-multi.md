@@ -100,3 +100,32 @@ mysql -u root -p -P 3307
 - Each instance needs unique: port, data directory, service name, server ID
 - Use forward slashes in INI file paths
 - Don't quote paths in INI files
+
+
+Here are some typical real-world use cases for the operations that can be performed with the `portfolios`, `trades`, and `trade_audit` tables across two databases:
+### Portfolio Operations (DB1)
+1. **Create Portfolio**: Users can create a new portfolio to manage their investments.
+2. **Edit Portfolio**: Users can update portfolio details such as name, description, or associated metadata.
+3. **View Portfolio**: Users can fetch details of a specific portfolio or list all portfolios.
+4. **Delete Portfolio**: Users can delete a portfolio if it is no longer needed.
+
+### Trade Operations (DB1)
+1. **Submit Trade**: Users can submit a new trade for a specific portfolio, specifying details like trade type (BUY/SELL), quantity, and price.
+2. **Edit Trade**: Users can update trade details (e.g., price, quantity) before the trade is finalized.
+3. **View Trades**: Users can view all trades for a specific portfolio or fetch details of a specific trade.
+4. **Delete Trade**: Users can delete a trade if it was created in error or is no longer valid.
+
+### Trade Audit Operations (DB2)
+1. **Log Trade Events**: Automatically log actions like trade submission, updates, or deletions for auditing purposes.
+2. **View Audit Logs**: Administrators or auditors can view the history of actions performed on trades for compliance and troubleshooting.
+3. **Filter Audit Logs**: Retrieve audit logs for specific trades or actions (e.g., all `SUBMIT` actions for a given time period).
+4. **Analyze Audit Data**: Use audit logs to generate reports or insights, such as identifying frequent updates or cancellations.
+
+### Cross-Functional Use Cases
+1. **Portfolio Performance Analysis**: Combine portfolio and trade data to calculate performance metrics like ROI or portfolio diversification.
+2. **Compliance Monitoring**: Use audit logs to ensure trades comply with regulatory requirements.
+3. **Fraud Detection**: Analyze audit logs for unusual patterns, such as frequent trade cancellations or updates.
+4. **User Notifications**: Notify users of significant events, such as successful trade submissions or portfolio updates.
+5. **Data Integrity Checks**: Ensure that all trades in the `trades` table have corresponding audit logs in the `trade_audit` table.
+
+These use cases demonstrate how the system can support both user-driven operations and backend processes for auditing, compliance, and analytics.
