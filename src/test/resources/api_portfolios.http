@@ -1,0 +1,40 @@
+### get csrf token
+GET http://localhost:8080/csrf
+Authorization: Basic {{base64_username_password}}
+
+> {% client.global.set("csrf_token", response.body.csrfToken); %}
+
+### Get all portfolios (paginated)
+GET http://localhost:8080/v1/api/portfolios?page=0&size=10
+Authorization: Basic {{base64_username_password}}
+X-CSRF-TOKEN: {{csrf_token}}
+
+### Get portfolio by ID
+GET http://localhost:8080/v1/api/portfolios/1
+Authorization: Basic {{base64_username_password}}
+X-CSRF-TOKEN: {{csrf_token}}
+
+### Create a new portfolio
+POST http://localhost:8080/v1/api/portfolios/save
+Content-Type: application/json
+Authorization: Basic {{base64_username_password}}
+X-CSRF-TOKEN: {{csrf_token}}
+
+{
+  "name": "Sample Portfolio"
+}
+
+### Update a portfolio
+PUT http://localhost:8080/v1/api/portfolios/update/1
+Content-Type: application/json
+Authorization: Basic {{base64_username_password}}
+X-CSRF-TOKEN: {{csrf_token}}
+
+{
+  "name": "Updated Portfolio Name"
+}
+
+### Delete a portfolio
+DELETE http://localhost:8080/v1/api/portfolios/delete/4
+Authorization: Basic {{base64_username_password}}
+X-CSRF-TOKEN: {{csrf_token}}

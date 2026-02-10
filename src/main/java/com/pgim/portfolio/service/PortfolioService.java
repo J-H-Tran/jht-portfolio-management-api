@@ -6,18 +6,16 @@ import com.pgim.portfolio.dto.TradeDTO;
 import com.pgim.portfolio.entity.Portfolio;
 import com.pgim.portfolio.entity.Trade;
 import com.pgim.portfolio.repository.PortfolioRepository;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 public class PortfolioService {

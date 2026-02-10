@@ -27,7 +27,7 @@ public class TradeController {
         this.tradeService = tradeService;
     }
 
-    @GetMapping("/{ed}")
+    @GetMapping("/{id}")
     public ResponseEntity<TradeDTO> getTradeById(@PathVariable Long id) {
         TradeDTO trade = tradeService.getTradeById(id);
         return ResponseEntity.ok(trade);
