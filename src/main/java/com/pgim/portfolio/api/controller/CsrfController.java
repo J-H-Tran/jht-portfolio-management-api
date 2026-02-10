@@ -1,4 +1,4 @@
-package com.pgim.portfolio.controller;
+package com.pgim.portfolio.api.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.web.csrf.CsrfToken;

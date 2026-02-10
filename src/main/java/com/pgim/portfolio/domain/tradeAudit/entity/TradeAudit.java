@@ -1,5 +1,6 @@
-package com.pgim.portfolio.entity;
+package com.pgim.portfolio.domain.tradeAudit.entity;
 
+import com.pgim.portfolio.domain.trade.entity.Trade;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

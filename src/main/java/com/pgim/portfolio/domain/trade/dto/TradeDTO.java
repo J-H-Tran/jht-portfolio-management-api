@@ -1,6 +1,6 @@
-package com.pgim.portfolio.dto;
+package com.pgim.portfolio.domain.trade.dto;
 
-import com.pgim.portfolio.entity.Trade;
+import com.pgim.portfolio.domain.trade.entity.Trade;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;

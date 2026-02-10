@@ -1,4 +1,4 @@
-package com.pgim.portfolio.dto;
+package com.pgim.portfolio.domain.tradeAudit.dto;
 
 import lombok.Data;
 

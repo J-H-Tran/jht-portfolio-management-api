@@ -1,6 +1,7 @@
-package com.pgim.portfolio.dto;
+package com.pgim.portfolio.domain.portfolio;
 
-import com.pgim.portfolio.entity.Portfolio;
+import com.pgim.portfolio.domain.portfolio.dto.PortfolioDTO;
+import com.pgim.portfolio.domain.portfolio.entity.Portfolio;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

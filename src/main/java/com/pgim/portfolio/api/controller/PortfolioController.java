@@ -1,7 +1,7 @@
-package com.pgim.portfolio.controller;
+package com.pgim.portfolio.api.controller;
 
-import com.pgim.portfolio.dto.PortfolioDTO;
-import com.pgim.portfolio.service.PortfolioService;
+import com.pgim.portfolio.domain.portfolio.dto.PortfolioDTO;
+import com.pgim.portfolio.service.impl.PortfolioServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,35 +21,35 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("v1/api/portfolios")
 public class PortfolioController {
     // CRUD: Create, Read, Update, Delete
-    private final PortfolioService portfolioService;
+    private final PortfolioServiceImpl portfolioServiceImpl;
     private final PagedResourcesAssembler<PortfolioDTO> pagedResourcesAssembler;
 
     //@Autowired
     public PortfolioController(
-            PortfolioService portfolioService,
+            PortfolioServiceImpl portfolioServiceImpl,
             PagedResourcesAssembler<PortfolioDTO> pagedResourcesAssembler
     ) {
-        this.portfolioService = portfolioService;
+        this.portfolioServiceImpl = portfolioServiceImpl;
         this.pagedResourcesAssembler = pagedResourcesAssembler;
     }
 
     // Equivalent -> @RequestMapping(value=”/home”, method = RequestMethod.GET), Read
     @GetMapping
     public ResponseEntity<Page<PortfolioDTO>> getAllPortfolios(Pageable pageable) {
-        Page<PortfolioDTO> portfolios = portfolioService.getAllPortfolios(pageable);
+        Page<PortfolioDTO> portfolios = portfolioServiceImpl.getAllPortfolios(pageable);
         return ResponseEntity.ok(portfolios);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<PortfolioDTO> getPortfolioById(@PathVariable Long id) {
-        PortfolioDTO portfolio = portfolioService.getPortfolioById(id);
+        PortfolioDTO portfolio = portfolioServiceImpl.getPortfolioById(id);
         return ResponseEntity.ok(portfolio);
     }
 
     // Create
     @PostMapping(value = "/save")
     public ResponseEntity<PortfolioDTO> createPortfolio(@Valid @RequestBody PortfolioDTO portfolioDTO) {
-        PortfolioDTO createdPortfolio = portfolioService.createPortfolio(portfolioDTO);
+        PortfolioDTO createdPortfolio = portfolioServiceImpl.createPortfolio(portfolioDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPortfolio);
     }
 
@@ -59,13 +59,13 @@ public class PortfolioController {
             @PathVariable("id") Long portfolioId,
             @RequestBody PortfolioDTO portfolioDTO
     ) {
-        PortfolioDTO updatedPortfolio = portfolioService.updatePortfolio(portfolioId, portfolioDTO);
+        PortfolioDTO updatedPortfolio = portfolioServiceImpl.updatePortfolio(portfolioId, portfolioDTO);
         return ResponseEntity.ok(updatedPortfolio);
     }
 
     @DeleteMapping(value = "/delete/{id}")
     public ResponseEntity<Void> deletePortfolio(@PathVariable("id") Long portfolioId) {
-        portfolioService.deletePortfolio(portfolioId);
+        portfolioServiceImpl.deletePortfolio(portfolioId);
         return ResponseEntity.noContent().build();
     }
 }

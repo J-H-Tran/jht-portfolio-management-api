@@ -1,8 +1,8 @@
-package com.pgim.portfolio.dto;
+package com.pgim.portfolio.domain.tradeAudit;
 
-import com.pgim.portfolio.entity.TradeAudit;
+import com.pgim.portfolio.domain.tradeAudit.entity.TradeAudit;
+import com.pgim.portfolio.domain.tradeAudit.dto.TradeAuditDTO;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface TradeAuditMapper {

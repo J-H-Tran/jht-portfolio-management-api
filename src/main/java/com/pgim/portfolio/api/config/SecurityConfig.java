@@ -1,4 +1,4 @@
-package com.pgim.portfolio.config;
+package com.pgim.portfolio.api.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;

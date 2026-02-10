@@ -1,7 +1,7 @@
-package com.pgim.portfolio.controller;
+package com.pgim.portfolio.api.controller;
 
-import com.pgim.portfolio.dto.TradeDTO;
-import com.pgim.portfolio.service.TradeService;
+import com.pgim.portfolio.domain.trade.dto.TradeDTO;
+import com.pgim.portfolio.service.impl.TradeServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,15 +21,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("v1/api/trades")
 public class TradeController {
 
-    private final TradeService tradeService;
+    private final TradeServiceImpl tradeServiceImpl;
 
-    public TradeController(TradeService tradeService) {
-        this.tradeService = tradeService;
+    public TradeController(TradeServiceImpl tradeServiceImpl) {
+        this.tradeServiceImpl = tradeServiceImpl;
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<TradeDTO> getTradeById(@PathVariable Long id) {
-        TradeDTO trade = tradeService.getTradeById(id);
+        TradeDTO trade = tradeServiceImpl.getTradeById(id);
         return ResponseEntity.ok(trade);
     }
 
@@ -39,33 +39,33 @@ public class TradeController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        Page<TradeDTO> tradesByPortfolioId = tradeService.getTradesByPortfolioId(portfolioId, PageRequest.of(page, size));
+        Page<TradeDTO> tradesByPortfolioId = tradeServiceImpl.getTradesByPortfolioId(portfolioId, PageRequest.of(page, size));
         return ResponseEntity.ok(tradesByPortfolioId);
     }
 
     @PostMapping("/save")
     public ResponseEntity<TradeDTO> addTrade(@Valid @RequestBody TradeDTO tradeDTO) {
-        TradeDTO createdTrade = tradeService.addTrade(tradeDTO);
+        TradeDTO createdTrade = tradeServiceImpl.addTrade(tradeDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdTrade);
     }
 
     // Create
     @PostMapping
     public ResponseEntity<TradeDTO> submitTrade(@Valid @RequestBody TradeDTO tradeDTO) {
-        TradeDTO submittedTrade = tradeService.submitTrade(tradeDTO);
+        TradeDTO submittedTrade = tradeServiceImpl.submitTrade(tradeDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(submittedTrade);
     }
 
     // Update
     @PutMapping("/update/{id}")
     public ResponseEntity<TradeDTO> updateTrade(@PathVariable Long id, @RequestBody TradeDTO tradeDTO) {
-        TradeDTO updatedTrade = tradeService.updateTrade(id, tradeDTO);
+        TradeDTO updatedTrade = tradeServiceImpl.updateTrade(id, tradeDTO);
         return ResponseEntity.ok(updatedTrade);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteTrade(@PathVariable Long id) {
-        tradeService.deleteTrade(id);
+        tradeServiceImpl.deleteTrade(id);
         return ResponseEntity.noContent().build();
     }
 }
