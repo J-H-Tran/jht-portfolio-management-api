@@ -21,7 +21,7 @@ Authorization: Basic {{base64_username_password}}
 X-CSRF-TOKEN: {{csrf_token}}
 
 {
-  "name": "Sample Portfolio"
+  "name": "Sample Portfolio 1"
 }
 
 ### Update a portfolio
@@ -31,7 +31,7 @@ Authorization: Basic {{base64_username_password}}
 X-CSRF-TOKEN: {{csrf_token}}
 
 {
-  "name": "Updated Portfolio Name"
+  "name": "Updated Portfolio Name2"
 }
 
 ### Delete a portfolio

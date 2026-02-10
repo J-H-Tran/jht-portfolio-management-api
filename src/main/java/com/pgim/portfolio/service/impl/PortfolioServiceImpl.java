@@ -36,13 +36,11 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     public Page<PortfolioDTO> getAllPortfolios(Pageable pageable) {
         logger.info("Getting all portfolios");
-        return portfolioRepository.findAll(pageable)
-                .map(portfolioMapper::toDTO);
+        return portfolioRepository.findAll(pageable).map(portfolioMapper::toDTO);
     }
 
     public PortfolioDTO getPortfolioById(Long portfolioId) {
-        Portfolio existingPortfolio = portfolioRepository.findById(portfolioId)
-                .orElseThrow(() -> new IllegalArgumentException("Portfolio not found with id: " + portfolioId));
+        Portfolio existingPortfolio = getExistingPortfolio(portfolioId);
         return portfolioMapper.toDTO(existingPortfolio);
     }
 
@@ -60,8 +58,7 @@ public class PortfolioServiceImpl implements PortfolioService {
     @Transactional
     public PortfolioDTO updatePortfolio(Long portfolioId, PortfolioDTO portfolioDTO) {
         // Fetch the existing portfolio
-        Portfolio portfolio = portfolioRepository.findById(portfolioId)
-                .orElseThrow(() -> new IllegalArgumentException("Portfolio not found with id: " + portfolioId));
+        Portfolio portfolio = getExistingPortfolio(portfolioId);
 
         // Update portfolio fields
         portfolio.setName(portfolioDTO.getName());
@@ -74,7 +71,7 @@ public class PortfolioServiceImpl implements PortfolioService {
                 .collect(Collectors.toMap(Trade::getId, trade -> trade));
 
         // Iterate over the incoming trades and update or add them
-        for (TradeDTO tradeDTO : tradeDTOs) {
+        tradeDTOs.forEach(tradeDTO -> {
             Trade trade = existingTrades.get(tradeDTO.getId());
             if (trade != null) {
                 // Update existing trade
@@ -94,9 +91,7 @@ public class PortfolioServiceImpl implements PortfolioService {
                 newTrade.setPortfolio(portfolio);
                 portfolio.getTrades().add(newTrade);
             }
-        }
-
-        // Save the portfolio
+        });
         Portfolio savedPortfolio = portfolioRepository.save(portfolio);
         return portfolioMapper.toDTO(savedPortfolio);
     }
@@ -106,5 +101,10 @@ public class PortfolioServiceImpl implements PortfolioService {
             throw new IllegalArgumentException("Portfolio not found with id: " + portfolioId);
         }
         portfolioRepository.deleteById(portfolioId);
+    }
+
+    private Portfolio getExistingPortfolio(Long portfolioId) {
+        return portfolioRepository.findById(portfolioId)
+                .orElseThrow(() -> new IllegalArgumentException("Portfolio not found with id: " + portfolioId));
     }
 }

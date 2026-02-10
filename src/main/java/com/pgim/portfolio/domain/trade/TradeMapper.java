@@ -7,6 +7,7 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring") // Bean for spring to manage, update pom xml
 public interface TradeMapper {
+    // Custom mapping needs @Mapper(uses) in related mapper PortfolioMapper
     @Mapping(source = "portfolio.id", target = "portfolioId")
     TradeDTO toDTO(Trade trade);
 

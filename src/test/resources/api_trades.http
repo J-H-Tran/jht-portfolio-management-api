@@ -5,7 +5,7 @@ Authorization: Basic {{base64_username_password}}
 > {% client.global.set("csrf_token", response.body.csrfToken); %}
 
 ### Get trade by ID
-GET http://localhost:8080/v1/api/trades/1
+GET http://localhost:8080/v1/api/trades/2
 Authorization: Basic {{base64_username_password}}
 X-CSRF-TOKEN: {{csrf_token}}
 
@@ -52,7 +52,7 @@ X-CSRF-TOKEN: {{csrf_token}}
 
 {
   "portfolioId": 1,
-  "tradeReferenceId": "TREF123",
+  "tradeReferenceId": "TREF125",
   "tradeType": "BUY",
   "quantity": 120,
   "price": 50.50,
