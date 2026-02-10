@@ -1,10 +1,11 @@
-package com.pgim.portfolio.service.impl;
+package com.pgim.portfolio.service.pm.impl;
 
-import com.pgim.portfolio.domain.trade.dto.TradeDTO;
-import com.pgim.portfolio.domain.trade.TradeMapper;
-import com.pgim.portfolio.domain.trade.entity.Trade;
-import com.pgim.portfolio.repository.TradeRepository;
-import com.pgim.portfolio.service.TradeService;
+import com.pgim.portfolio.domain.TradeMapper;
+import com.pgim.portfolio.domain.dto.pm.TradeDTO;
+import com.pgim.portfolio.domain.entity.pm.Trade;
+import com.pgim.portfolio.repository.pm.TradeRepository;
+import com.pgim.portfolio.service.audit.TradeAuditService;
+import com.pgim.portfolio.service.pm.TradeService;
 import java.math.BigDecimal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,15 +21,18 @@ public class TradeServiceImpl implements TradeService {
     // Constructor injection is preferred for immutability and easier testing
     private final TradeRepository tradeRepository;
     private final TradeMapper tradeMapper;
+    private final TradeAuditService tradeAuditService;
 //    private final MessageQueuePublisher messageQueuePublisher;
 
     // @Autowired is implicit for single constructor
     public TradeServiceImpl(
             TradeRepository tradeRepository,
-            TradeMapper tradeMapper
+            TradeMapper tradeMapper,
+            TradeAuditService tradeAuditService
     ) {
         this.tradeRepository = tradeRepository;
         this.tradeMapper = tradeMapper;
+        this.tradeAuditService = tradeAuditService;
     }
 
     /**

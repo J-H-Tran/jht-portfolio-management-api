@@ -1,7 +1,7 @@
-package com.pgim.portfolio.domain.tradeAudit;
+package com.pgim.portfolio.domain;
 
-import com.pgim.portfolio.domain.tradeAudit.entity.TradeAudit;
-import com.pgim.portfolio.domain.tradeAudit.dto.TradeAuditDTO;
+import com.pgim.portfolio.domain.dto.audit.TradeAuditDTO;
+import com.pgim.portfolio.domain.entity.audit.TradeAudit;
 import org.mapstruct.Mapper;
 
 /**

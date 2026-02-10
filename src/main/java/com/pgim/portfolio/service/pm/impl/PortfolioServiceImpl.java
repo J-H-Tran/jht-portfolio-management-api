@@ -1,12 +1,12 @@
-package com.pgim.portfolio.service.impl;
+package com.pgim.portfolio.service.pm.impl;
 
-import com.pgim.portfolio.domain.portfolio.dto.PortfolioDTO;
-import com.pgim.portfolio.domain.portfolio.PortfolioMapper;
-import com.pgim.portfolio.domain.trade.dto.TradeDTO;
-import com.pgim.portfolio.domain.portfolio.entity.Portfolio;
-import com.pgim.portfolio.domain.trade.entity.Trade;
-import com.pgim.portfolio.repository.PortfolioRepository;
-import com.pgim.portfolio.service.PortfolioService;
+import com.pgim.portfolio.domain.dto.pm.PortfolioDTO;
+import com.pgim.portfolio.domain.PortfolioMapper;
+import com.pgim.portfolio.domain.dto.pm.TradeDTO;
+import com.pgim.portfolio.domain.entity.pm.Portfolio;
+import com.pgim.portfolio.domain.entity.pm.Trade;
+import com.pgim.portfolio.repository.pm.PortfolioRepository;
+import com.pgim.portfolio.service.pm.PortfolioService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

@@ -1,8 +1,7 @@
-package com.pgim.portfolio.domain.portfolio;
+package com.pgim.portfolio.domain;
 
-import com.pgim.portfolio.domain.portfolio.dto.PortfolioDTO;
-import com.pgim.portfolio.domain.portfolio.entity.Portfolio;
-import com.pgim.portfolio.domain.trade.TradeMapper;
+import com.pgim.portfolio.domain.dto.pm.PortfolioDTO;
+import com.pgim.portfolio.domain.entity.pm.Portfolio;
 import org.mapstruct.Mapper;
 
 /**

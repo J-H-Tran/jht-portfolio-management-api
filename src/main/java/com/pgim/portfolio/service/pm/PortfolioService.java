@@ -1,6 +1,6 @@
-package com.pgim.portfolio.service;
+package com.pgim.portfolio.service.pm;
 
-import com.pgim.portfolio.domain.portfolio.dto.PortfolioDTO;
+import com.pgim.portfolio.domain.dto.pm.PortfolioDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

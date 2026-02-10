@@ -1,6 +1,5 @@
-package com.pgim.portfolio.domain.portfolio.entity;
+package com.pgim.portfolio.domain.entity.pm;
 
-import com.pgim.portfolio.domain.trade.entity.Trade;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

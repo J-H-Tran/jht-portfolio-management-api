@@ -1,6 +1,6 @@
-package com.pgim.portfolio.repository;
+package com.pgim.portfolio.repository.pm;
 
-import com.pgim.portfolio.domain.trade.entity.Trade;
+import com.pgim.portfolio.domain.entity.pm.Trade;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

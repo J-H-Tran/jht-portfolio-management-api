@@ -1,6 +1,5 @@
-package com.pgim.portfolio.domain.tradeAudit.entity;
+package com.pgim.portfolio.domain.entity.audit;
 
-import com.pgim.portfolio.domain.trade.entity.Trade;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -8,16 +7,11 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
-
-import java.time.LocalDateTime;
 import org.hibernate.annotations.UpdateTimestamp;
-
-;
 
 @Entity
 @Table(name = "trade_audit")
@@ -27,9 +21,8 @@ public class TradeAudit {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "trade_id", nullable = false)
-    private Trade trade;
+    @Column(name = "trade_id", nullable = false)
+    private Long tradeId;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

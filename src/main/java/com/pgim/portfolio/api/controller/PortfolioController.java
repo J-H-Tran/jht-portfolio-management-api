@@ -1,7 +1,7 @@
 package com.pgim.portfolio.api.controller;
 
-import com.pgim.portfolio.domain.portfolio.dto.PortfolioDTO;
-import com.pgim.portfolio.service.impl.PortfolioServiceImpl;
+import com.pgim.portfolio.domain.dto.pm.PortfolioDTO;
+import com.pgim.portfolio.service.pm.impl.PortfolioServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

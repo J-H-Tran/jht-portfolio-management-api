@@ -1,7 +1,7 @@
 package com.pgim.portfolio.api.controller;
 
-import com.pgim.portfolio.domain.trade.dto.TradeDTO;
-import com.pgim.portfolio.service.impl.TradeServiceImpl;
+import com.pgim.portfolio.domain.dto.pm.TradeDTO;
+import com.pgim.portfolio.service.pm.impl.TradeServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
