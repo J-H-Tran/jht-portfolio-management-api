@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,14 +43,19 @@ public class PortfolioServiceImpl implements PortfolioService {
      */
     public Page<PortfolioDTO> getAllPortfolios(Pageable pageable) {
         logger.info("Getting all portfolios");
-        return portfolioRepository.findAll(pageable).map(portfolioMapper::toDTO);
+        List<Portfolio> portfolios = portfolioRepository.findAllWithTrades();
+        List<PortfolioDTO> portfolioDTOs = portfolios.stream()
+                .map(portfolioMapper::toDTO)
+                .collect(Collectors.toList());
+        return new PageImpl<>(portfolioDTOs, pageable, portfolioDTOs.size());
     }
 
     /**
      * Retrieves a portfolio by its ID, throws if not found.
      */
     public PortfolioDTO getPortfolioById(Long portfolioId) {
-        Portfolio existingPortfolio = getExistingPortfolio(portfolioId);
+        Portfolio existingPortfolio = portfolioRepository.findByIdWithTrades(portfolioId)
+                .orElseThrow(() -> new IllegalArgumentException("Portfolio not found with id: " + portfolioId));
         return portfolioMapper.toDTO(existingPortfolio);
     }
 
@@ -73,7 +79,7 @@ public class PortfolioServiceImpl implements PortfolioService {
      * @Transactional ensures atomicity and consistency for the upsert logic.
      * Existing trades are updated, new trades are added, and all are linked to the portfolio.
      */
-    @Transactional // Ensures all changes are committed or rolled back together
+    @Transactional(transactionManager = "pmTransactionManager") // Ensures all changes are committed or rolled back together
     public PortfolioDTO updatePortfolio(Long portfolioId, PortfolioDTO portfolioDTO) {
         // Fetch the existing portfolio, throws if not found
         Portfolio portfolio = getExistingPortfolio(portfolioId);
