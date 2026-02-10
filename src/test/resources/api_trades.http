@@ -60,6 +60,6 @@ X-CSRF-TOKEN: {{csrf_token}}
 }
 
 ### Delete a trade
-DELETE http://localhost:8080/v1/api/trades/delete/5
+DELETE http://localhost:8080/v1/api/trades/delete/6
 Authorization: Basic {{base64_username_password}}
 X-CSRF-TOKEN: {{csrf_token}}

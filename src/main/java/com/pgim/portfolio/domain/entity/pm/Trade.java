@@ -16,6 +16,8 @@ import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import static com.pgim.portfolio.domain.entity.pm.Trade.TradeStatus.PENDING;
+
 @Entity
 @Table(name = "trades")
 @Data
@@ -43,7 +45,7 @@ public class Trade {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private TradeStatus status = TradeStatus.PENDING;
+    private TradeStatus status = PENDING;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

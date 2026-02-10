@@ -40,6 +40,9 @@ public class TradeAudit {
     private LocalDateTime updatedAt;
 
     public enum AuditAction {
-        CREATE, ADJUST, CANCEL
+        SUBMIT,
+        UPDATE,
+        DELETE,
+        CANCEL
     }
 }

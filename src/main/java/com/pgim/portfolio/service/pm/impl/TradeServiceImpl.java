@@ -6,12 +6,17 @@ import com.pgim.portfolio.domain.entity.pm.Trade;
 import com.pgim.portfolio.repository.pm.TradeRepository;
 import com.pgim.portfolio.service.audit.TradeAuditService;
 import com.pgim.portfolio.service.pm.TradeService;
-import java.math.BigDecimal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+
+import static com.pgim.portfolio.domain.entity.audit.TradeAudit.AuditAction.DELETE;
+import static com.pgim.portfolio.domain.entity.audit.TradeAudit.AuditAction.SUBMIT;
+import static com.pgim.portfolio.domain.entity.audit.TradeAudit.AuditAction.UPDATE;
 
 @Service
 public class TradeServiceImpl implements TradeService {
@@ -84,12 +89,21 @@ public class TradeServiceImpl implements TradeService {
         if (tradeRepository.findByTradeReferenceId(tradeDTO.getTradeReferenceId()).isPresent()) {
             throw new IllegalArgumentException("Duplicate trade submission with reference ID: " + tradeDTO.getTradeReferenceId());
         }
-        validateTrade(tradeDTO);    // validate trade details
+
+        // validate trade details
+        validateTrade(tradeDTO);
+
         Trade trade = tradeMapper.toEntity(tradeDTO);
         Trade savedTrade = tradeRepository.save(trade);
 
         // Publish trade to the database
 //        messageQueuePublisher.publishTrade(savedTrade);
+        // Log the trade submission in audit table
+        tradeAuditService.logTradeEvent(
+            savedTrade.getId(),
+            SUBMIT,
+            "Trade submitted successfully with reference ID: " + savedTrade.getTradeReferenceId()
+        );
         // log submission
         logger.info("Trade submitted successfully: {}", savedTrade);
         return tradeMapper.toDTO(savedTrade);
@@ -99,21 +113,37 @@ public class TradeServiceImpl implements TradeService {
      * Updates an existing trade. Preserves ID and portfolio relationship.
      */
     public TradeDTO updateTrade(Long id, TradeDTO updateTradeDTO) {
-        return tradeRepository.findById(id)
-                .map(existingTrade -> {
-                    Trade updateTrade = tradeMapper.toEntity(updateTradeDTO);
-                    updateTrade.setId(existingTrade.getId()); // Preserve ID
-                    updateTrade.setPortfolio(existingTrade.getPortfolio()); // Preserve portfolio relationship
-                    Trade savedTrade = tradeRepository.save(updateTrade);
-                    return tradeMapper.toDTO(savedTrade);
-                })
-                .orElseThrow(() -> new IllegalArgumentException("Trade not found with id: " + id));
+        Trade existingTrade = tradeRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("Trade not found for trade id: " + id)
+        );
+        tradeAuditService.logTradeEvent(
+                id,
+                UPDATE,
+                "Trade update initiated with reference ID: " + existingTrade.getTradeReferenceId()
+        );
+        // Update trade details
+        Trade updateTrade = tradeMapper.toEntity(updateTradeDTO);
+        updateTrade.setId(existingTrade.getId()); // Preserve ID
+        updateTrade.setPortfolio(existingTrade.getPortfolio()); // Preserve portfolio relationship
+        Trade savedTrade = tradeRepository.save(updateTrade);
+
+        tradeAuditService.logTradeEvent(
+                id,
+                UPDATE,
+                "Trade updated successfully with reference ID: " + updateTrade.getTradeReferenceId()
+        );
+        return tradeMapper.toDTO(savedTrade);
     }
 
     /**
      * Deletes a trade by ID.
      */
     public void deleteTrade(Long id) {
+        tradeAuditService.logTradeEvent(
+                id,
+                DELETE,
+                "Trade deleted successfully with reference ID: " + id
+        );
         tradeRepository.deleteById(id);
     }
 

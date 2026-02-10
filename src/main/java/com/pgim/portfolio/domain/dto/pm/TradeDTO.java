@@ -1,6 +1,7 @@
 package com.pgim.portfolio.domain.dto.pm;
 
-import com.pgim.portfolio.domain.entity.pm.Trade;
+import com.pgim.portfolio.domain.entity.pm.Trade.TradeStatus;
+import com.pgim.portfolio.domain.entity.pm.Trade.TradeType;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
@@ -18,7 +19,7 @@ public class TradeDTO {
     @NotNull
     private String tradeReferenceId;
 
-    private Trade.TradeType tradeType;
+    private TradeType tradeType;
 
     @NotNull
     @Positive
@@ -28,7 +29,7 @@ public class TradeDTO {
     @Positive
     private BigDecimal price;
 
-    private Trade.TradeStatus status;
+    private TradeStatus status;
 
     private LocalDateTime createdAt;
 }
