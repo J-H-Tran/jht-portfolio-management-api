@@ -14,12 +14,15 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class TradeServiceImpl implements TradeService {
+    // Logger is used for tracking service operations and debugging
     private static final Logger logger = LoggerFactory.getLogger(TradeServiceImpl.class);
 
+    // Constructor injection is preferred for immutability and easier testing
     private final TradeRepository tradeRepository;
     private final TradeMapper tradeMapper;
 //    private final MessageQueuePublisher messageQueuePublisher;
 
+    // @Autowired is implicit for single constructor
     public TradeServiceImpl(
             TradeRepository tradeRepository,
             TradeMapper tradeMapper
@@ -28,24 +31,37 @@ public class TradeServiceImpl implements TradeService {
         this.tradeMapper = tradeMapper;
     }
 
+    /**
+     * Fetches a trade by its ID, throws if not found.
+     */
     public TradeDTO getTradeById(Long tradeId) {
         Trade existingTrade = tradeRepository.findById(tradeId)
                 .orElseThrow(() -> new IllegalArgumentException("Portfolio not found with id: " + tradeId));
         return tradeMapper.toDTO(existingTrade);
     }
 
+    /**
+     * Fetches trades for a portfolio with pagination.
+     * Uses repository and mapper to convert entities to DTOs.
+     */
     public Page<TradeDTO> getTradesByPortfolioId(Long portfolioId, Pageable pageable) {
         logger.info("Fetching trades for portfolioId: {}", portfolioId);
         return tradeRepository.findByPortfolioId(portfolioId, pageable)
                 .map(tradeMapper::toDTO);
     }
 
+    /**
+     * Fetches all trades with pagination support.
+     */
     public Page<TradeDTO> getAllTrades(Pageable pageable) {
         logger.info("Fetching all trades");
         return tradeRepository.findAll(pageable)
                 .map(tradeMapper::toDTO);
     }
 
+    /**
+     * Adds a new trade. Validates input and persists entity.
+     */
     public TradeDTO addTrade(TradeDTO tradeDTO) {
         Trade trade =tradeMapper.toEntity(tradeDTO);
 
@@ -54,16 +70,18 @@ public class TradeServiceImpl implements TradeService {
         return tradeMapper.toDTO(savedTrade);
     }
 
+    /**
+     * Submits a trade with idempotency check.
+     * Throws if duplicate reference ID is found.
+     * Validates trade details before persisting.
+     */
     public TradeDTO submitTrade(TradeDTO tradeDTO) {
         // Idempotency check
         if (tradeRepository.findByTradeReferenceId(tradeDTO.getTradeReferenceId()).isPresent()) {
             throw new IllegalArgumentException("Duplicate trade submission with reference ID: " + tradeDTO.getTradeReferenceId());
         }
-
         validateTrade(tradeDTO);    // validate trade details
-
         Trade trade = tradeMapper.toEntity(tradeDTO);
-
         Trade savedTrade = tradeRepository.save(trade);
 
         // Publish trade to the database
@@ -73,6 +91,9 @@ public class TradeServiceImpl implements TradeService {
         return tradeMapper.toDTO(savedTrade);
     }
 
+    /**
+     * Updates an existing trade. Preserves ID and portfolio relationship.
+     */
     public TradeDTO updateTrade(Long id, TradeDTO updateTradeDTO) {
         return tradeRepository.findById(id)
                 .map(existingTrade -> {
@@ -85,10 +106,17 @@ public class TradeServiceImpl implements TradeService {
                 .orElseThrow(() -> new IllegalArgumentException("Trade not found with id: " + id));
     }
 
+    /**
+     * Deletes a trade by ID.
+     */
     public void deleteTrade(Long id) {
         tradeRepository.deleteById(id);
     }
 
+    /**
+     * Validates trade details for business rules.
+     * Throws if invalid.
+     */
     private void validateTrade(TradeDTO tradeDTO) {
         if (tradeDTO.getQuantity() == null || tradeDTO.getQuantity().compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Trade quantity must be greater than zero.");

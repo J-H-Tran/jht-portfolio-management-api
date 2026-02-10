@@ -17,22 +17,36 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Controller for Trade operations.
+ * Endpoints are lean, business logic is delegated to service layer.
+ * Constructor injection is used for easier testing and immutability.
+ */
 @RestController
 @RequestMapping("v1/api/trades")
 public class TradeController {
 
     private final TradeServiceImpl tradeServiceImpl;
 
+    //@Autowired is implicit for single constructor
     public TradeController(TradeServiceImpl tradeServiceImpl) {
         this.tradeServiceImpl = tradeServiceImpl;
     }
 
+    /**
+     * GET endpoint for trade by ID.
+     * Returns 404 if not found.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<TradeDTO> getTradeById(@PathVariable Long id) {
         TradeDTO trade = tradeServiceImpl.getTradeById(id);
         return ResponseEntity.ok(trade);
     }
 
+    /**
+     * GET endpoint for trades by portfolio ID with pagination.
+     * Delegates to service for business logic.
+     */
     @GetMapping("/portfolio/{portfolioId}")
     public ResponseEntity<Page<TradeDTO>> getTradesByPortfolioId(
             @PathVariable Long portfolioId,
@@ -43,26 +57,40 @@ public class TradeController {
         return ResponseEntity.ok(tradesByPortfolioId);
     }
 
+    /**
+     * POST endpoint for adding a trade.
+     * Validates input and delegates creation to service.
+     */
     @PostMapping("/save")
     public ResponseEntity<TradeDTO> addTrade(@Valid @RequestBody TradeDTO tradeDTO) {
         TradeDTO createdTrade = tradeServiceImpl.addTrade(tradeDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdTrade);
     }
 
-    // Create
+    /**
+     * POST endpoint for submitting a trade (idempotency check).
+     * Delegates to service for business logic.
+     */
     @PostMapping
     public ResponseEntity<TradeDTO> submitTrade(@Valid @RequestBody TradeDTO tradeDTO) {
         TradeDTO submittedTrade = tradeServiceImpl.submitTrade(tradeDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(submittedTrade);
     }
 
-    // Update
+    /**
+     * PUT endpoint for updating a trade.
+     * Delegates to service for business logic.
+     */
     @PutMapping("/update/{id}")
     public ResponseEntity<TradeDTO> updateTrade(@PathVariable Long id, @RequestBody TradeDTO tradeDTO) {
         TradeDTO updatedTrade = tradeServiceImpl.updateTrade(id, tradeDTO);
         return ResponseEntity.ok(updatedTrade);
     }
 
+    /**
+     * DELETE endpoint for removing a trade.
+     * Returns 204 No Content on success.
+     */
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteTrade(@PathVariable Long id) {
         tradeServiceImpl.deleteTrade(id);
