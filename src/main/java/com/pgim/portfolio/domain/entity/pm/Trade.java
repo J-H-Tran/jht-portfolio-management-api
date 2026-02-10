@@ -54,10 +54,17 @@ public class Trade {
     private LocalDateTime updatedAt;
 
     public enum TradeStatus {
-        PENDING, VALIDATED, FAILED, COMPLETED, CANCELLED
+        PENDING,
+        VALIDATED,
+        FAILED,
+        COMPLETED,
+        CANCELLED,
+        CLOSED,
+        OPEN
     }
 
     public enum TradeType {
-        BUY, SELL
+        BUY,
+        SELL
     }
 }
