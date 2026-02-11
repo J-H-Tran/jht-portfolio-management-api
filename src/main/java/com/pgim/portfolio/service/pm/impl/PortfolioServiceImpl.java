@@ -85,10 +85,10 @@ public class PortfolioServiceImpl implements PortfolioService {
         Portfolio portfolio = getExistingPortfolio(portfolioId);
 
         // Update portfolio fields (currently only name)
-        portfolio.setName(portfolioDTO.getName());
+        portfolio.setName(portfolioDTO.name());
 
         // Handle null trades gracefully, default to empty list
-        List<TradeDTO> tradeDTOs = portfolioDTO.getTrades() != null ? portfolioDTO.getTrades() : new ArrayList<>();
+        List<TradeDTO> tradeDTOs = portfolioDTO.trades() != null ? portfolioDTO.trades() : new ArrayList<>();
 
         // Map existing trades by ID for efficient lookup and update
         Map<Long, Trade> existingTrades = portfolio.getTrades().stream()
@@ -96,22 +96,22 @@ public class PortfolioServiceImpl implements PortfolioService {
 
         // Iterate over incoming trades: update existing or add new
         tradeDTOs.forEach(tradeDTO -> {
-            Trade trade = existingTrades.get(tradeDTO.getId());
+            Trade trade = existingTrades.get(tradeDTO.id());
             if (trade != null) {
                 // Update fields for existing trade
-                trade.setPrice(tradeDTO.getPrice());
-                trade.setQuantity(tradeDTO.getQuantity());
-                trade.setStatus(tradeDTO.getStatus());
-                trade.setTradeReferenceId(tradeDTO.getTradeReferenceId());
-                trade.setTradeType(tradeDTO.getTradeType());
+                trade.setPrice(tradeDTO.price());
+                trade.setQuantity(tradeDTO.quantity());
+                trade.setStatus(tradeDTO.status());
+                trade.setTradeReferenceId(tradeDTO.tradeReferenceId());
+                trade.setTradeType(tradeDTO.tradeType());
             } else {
                 // Add new trade and link to portfolio
                 Trade newTrade = new Trade();
-                newTrade.setPrice(tradeDTO.getPrice());
-                newTrade.setQuantity(tradeDTO.getQuantity());
-                newTrade.setStatus(tradeDTO.getStatus());
-                newTrade.setTradeReferenceId(tradeDTO.getTradeReferenceId());
-                newTrade.setTradeType(tradeDTO.getTradeType());
+                newTrade.setPrice(tradeDTO.price());
+                newTrade.setQuantity(tradeDTO.quantity());
+                newTrade.setStatus(tradeDTO.status());
+                newTrade.setTradeReferenceId(tradeDTO.tradeReferenceId());
+                newTrade.setTradeType(tradeDTO.tradeType());
                 newTrade.setPortfolio(portfolio); // Maintain relationship
                 portfolio.getTrades().add(newTrade);
             }

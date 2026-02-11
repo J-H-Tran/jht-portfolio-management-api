@@ -86,8 +86,8 @@ public class TradeServiceImpl implements TradeService {
      */
     public TradeDTO submitTrade(TradeDTO tradeDTO) {
         // Idempotency check
-        if (tradeRepository.findByTradeReferenceId(tradeDTO.getTradeReferenceId()).isPresent()) {
-            throw new IllegalArgumentException("Duplicate trade submission with reference ID: " + tradeDTO.getTradeReferenceId());
+        if (tradeRepository.findByTradeReferenceId(tradeDTO.tradeReferenceId()).isPresent()) {
+            throw new IllegalArgumentException("Duplicate trade submission with reference ID: " + tradeDTO.tradeReferenceId());
         }
 
         // validate trade details
@@ -152,13 +152,13 @@ public class TradeServiceImpl implements TradeService {
      * Throws if invalid.
      */
     private void validateTrade(TradeDTO tradeDTO) {
-        if (tradeDTO.getQuantity() == null || tradeDTO.getQuantity().compareTo(BigDecimal.ZERO) <= 0) {
+        if (tradeDTO.quantity() == null || tradeDTO.quantity().compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Trade quantity must be greater than zero.");
         }
-        if (tradeDTO.getPrice() == null || tradeDTO.getPrice().compareTo(BigDecimal.ZERO) <= 0) {
+        if (tradeDTO.price() == null || tradeDTO.price().compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Trade price must be greater than zero.");
         }
-        if (tradeDTO.getTradeType() == null) {
+        if (tradeDTO.tradeType() == null) {
             throw new IllegalArgumentException("Trade type must be specified.");
         }
     }
