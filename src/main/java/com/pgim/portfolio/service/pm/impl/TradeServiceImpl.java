@@ -40,6 +40,16 @@ public class TradeServiceImpl implements TradeService {
         this.tradeAuditService = tradeAuditService;
     }
 
+    @Override
+    public Page<TradeDTO> getAllTrades(Pageable pageable, String status) {
+        if (status != null) {
+            return tradeRepository.findByStatus(pageable, status)
+                    .map(tradeMapper::toDTO);
+        }
+        return tradeRepository.findAll(pageable)
+                .map(tradeMapper::toDTO);
+    }
+
     /**
      * Fetches a trade by its ID, throws if not found.
      */
@@ -53,30 +63,14 @@ public class TradeServiceImpl implements TradeService {
      * Fetches trades for a portfolio with pagination.
      * Uses repository and mapper to convert entities to DTOs.
      */
-    public Page<TradeDTO> getTradesByPortfolioId(Long portfolioId, Pageable pageable) {
-        logger.info("Fetching trades for portfolioId: {}", portfolioId);
-        return tradeRepository.findByPortfolioId(portfolioId, pageable)
+    public Page<TradeDTO> getTradesByPortfolioId(Pageable pageable, String status, Long id) {
+        logger.info("Fetching trades for portfolioId: {}, status: {}", id, status);
+        if (status != null) {
+            return tradeRepository.findByPortfolioIdAndStatus(pageable, status, id)
+                    .map(tradeMapper::toDTO);
+        }
+        return tradeRepository.findByPortfolioId(id, pageable)
                 .map(tradeMapper::toDTO);
-    }
-
-    /**
-     * Fetches all trades with pagination support.
-     */
-    public Page<TradeDTO> getAllTrades(Pageable pageable) {
-        logger.info("Fetching all trades");
-        return tradeRepository.findAll(pageable)
-                .map(tradeMapper::toDTO);
-    }
-
-    /**
-     * Adds a new trade. Validates input and persists entity.
-     */
-    public TradeDTO addTrade(TradeDTO tradeDTO) {
-        Trade trade =tradeMapper.toEntity(tradeDTO);
-
-        logger.info("Adding trade: {}", tradeDTO);
-        Trade savedTrade = tradeRepository.save(trade);
-        return tradeMapper.toDTO(savedTrade);
     }
 
     /**

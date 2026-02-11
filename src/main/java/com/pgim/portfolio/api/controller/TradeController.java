@@ -4,7 +4,6 @@ import com.pgim.portfolio.domain.dto.pm.TradeDTO;
 import com.pgim.portfolio.service.pm.TradeService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * Controller for Trade operations.
@@ -42,25 +38,7 @@ public class TradeController {
             Pageable pageable,
             @RequestParam(required = false) String status
     ) {
-        return ResponseEntity.ok(tradeService.getFilteredTrades(pageable, status));
-    }
-
-    @GetMapping("/grouped")
-    public ResponseEntity<Map<String, List<TradeDTO>>> groupTradesByStatus() {
-        return ResponseEntity.ok(tradeService.groupTradesByStatus());
-    }
-
-    @GetMapping("/types")
-    public ResponseEntity<String[]> getTradeTypes() {
-        return ResponseEntity.ok(tradeService.getPredefinedTradeTypes());
-    }
-
-    @GetMapping("/sorted")
-    public ResponseEntity<Page<TradeDTO>> getSortedTrades(
-            Pageable pageable,
-            @RequestParam(required = false) String status
-    ) {
-        return ResponseEntity.ok(tradeService.getFilteredTrades(pageable, status));
+        return ResponseEntity.ok(tradeService.getAllTrades(pageable, status));
     }
 
     /**
@@ -76,13 +54,15 @@ public class TradeController {
      * GET endpoint for trades by portfolio ID with pagination.
      * Delegates to service for business logic.
      */
-    @GetMapping("/portfolio/{portfolioId}")
+    @GetMapping("/portfolio/{id}")
     public ResponseEntity<Page<TradeDTO>> getTradesByPortfolioId(
-            @PathVariable Long portfolioId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            Pageable pageable,
+            @RequestParam(required = false) String status,
+            @PathVariable Long id
     ) {
-        return ResponseEntity.ok(tradeService.getTradesByPortfolioId(portfolioId, PageRequest.of(page, size)));
+        return ResponseEntity.ok(
+                tradeService.getTradesByPortfolioId(pageable, status, id)
+        );
     }
 
     /**
