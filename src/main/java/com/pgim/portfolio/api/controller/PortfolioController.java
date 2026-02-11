@@ -1,7 +1,7 @@
 package com.pgim.portfolio.api.controller;
 
 import com.pgim.portfolio.domain.dto.pm.PortfolioDTO;
-import com.pgim.portfolio.service.pm.impl.PortfolioServiceImpl;
+import com.pgim.portfolio.service.pm.PortfolioService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,15 +26,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("v1/api/portfolios")
 public class PortfolioController {
     // CRUD: Create, Read, Update, Delete
-    private final PortfolioServiceImpl portfolioServiceImpl;
+    private final PortfolioService portfolioService;
     private final PagedResourcesAssembler<PortfolioDTO> pagedResourcesAssembler;
 
     //@Autowired is implicit for single constructor
     public PortfolioController(
-            PortfolioServiceImpl portfolioServiceImpl,
+            PortfolioService portfolioService,
             PagedResourcesAssembler<PortfolioDTO> pagedResourcesAssembler
     ) {
-        this.portfolioServiceImpl = portfolioServiceImpl;
+        this.portfolioService = portfolioService;
         this.pagedResourcesAssembler = pagedResourcesAssembler;
     }
 
@@ -45,8 +45,7 @@ public class PortfolioController {
      */
     @GetMapping
     public ResponseEntity<Page<PortfolioDTO>> getAllPortfolios(Pageable pageable) {
-        Page<PortfolioDTO> portfolios = portfolioServiceImpl.getAllPortfolios(pageable);
-        return ResponseEntity.ok(portfolios);
+        return ResponseEntity.ok(portfolioService.getAllPortfolios(pageable));
     }
 
     /**
@@ -54,8 +53,10 @@ public class PortfolioController {
      * Returns 404 if not found.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<PortfolioDTO> getPortfolioById(@PathVariable Long id) {
-        PortfolioDTO portfolio = portfolioServiceImpl.getPortfolioById(id);
+    public ResponseEntity<PortfolioDTO> getPortfolioById(
+            @PathVariable Long id
+    ) {
+        PortfolioDTO portfolio = portfolioService.getPortfolioById(id);
         return ResponseEntity.ok(portfolio);
     }
 
@@ -63,32 +64,34 @@ public class PortfolioController {
      * POST endpoint for creating a portfolio.
      * Validates input and delegates creation to service.
      */
-    @PostMapping(value = "/save")
-    public ResponseEntity<PortfolioDTO> createPortfolio(@Valid @RequestBody PortfolioDTO portfolioDTO) {
-        PortfolioDTO createdPortfolio = portfolioServiceImpl.createPortfolio(portfolioDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdPortfolio);
+    @PostMapping
+    public ResponseEntity<PortfolioDTO> createPortfolio(
+            @Valid @RequestBody PortfolioDTO portfolioDTO
+    ) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(portfolioService.createPortfolio(portfolioDTO));
     }
 
     /**
      * PUT endpoint for updating a portfolio.
      * Uses @Transactional in service for atomic upsert logic.
      */
-    @PutMapping(value = "/update/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<PortfolioDTO> updatePortfolio(
-            @PathVariable("id") Long portfolioId,
+            @PathVariable Long id,
             @RequestBody PortfolioDTO portfolioDTO
     ) {
-        PortfolioDTO updatedPortfolio = portfolioServiceImpl.updatePortfolio(portfolioId, portfolioDTO);
-        return ResponseEntity.ok(updatedPortfolio);
+        return ResponseEntity.ok(portfolioService.updatePortfolio(id, portfolioDTO));
     }
 
     /**
      * DELETE endpoint for removing a portfolio.
      * Returns 204 No Content on success.
      */
-    @DeleteMapping(value = "/delete/{id}")
-    public ResponseEntity<Void> deletePortfolio(@PathVariable("id") Long portfolioId) {
-        portfolioServiceImpl.deletePortfolio(portfolioId);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletePortfolio(
+            @PathVariable Long id
+    ) {
+        portfolioService.deletePortfolio(id);
         return ResponseEntity.noContent().build();
     }
 }

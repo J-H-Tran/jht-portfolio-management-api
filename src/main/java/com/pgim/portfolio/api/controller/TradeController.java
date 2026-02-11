@@ -1,10 +1,11 @@
 package com.pgim.portfolio.api.controller;
 
 import com.pgim.portfolio.domain.dto.pm.TradeDTO;
-import com.pgim.portfolio.service.pm.impl.TradeServiceImpl;
+import com.pgim.portfolio.service.pm.TradeService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,6 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * Controller for Trade operations.
  * Endpoints are lean, business logic is delegated to service layer.
@@ -26,11 +30,37 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("v1/api/trades")
 public class TradeController {
 
-    private final TradeServiceImpl tradeServiceImpl;
+    private final TradeService tradeService;
 
     //@Autowired is implicit for single constructor
-    public TradeController(TradeServiceImpl tradeServiceImpl) {
-        this.tradeServiceImpl = tradeServiceImpl;
+    public TradeController(TradeService tradeService) {
+        this.tradeService = tradeService;
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<TradeDTO>> getTrades(
+            Pageable pageable,
+            @RequestParam(required = false) String status
+    ) {
+        return ResponseEntity.ok(tradeService.getFilteredTrades(pageable, status));
+    }
+
+    @GetMapping("/grouped")
+    public ResponseEntity<Map<String, List<TradeDTO>>> groupTradesByStatus() {
+        return ResponseEntity.ok(tradeService.groupTradesByStatus());
+    }
+
+    @GetMapping("/types")
+    public ResponseEntity<String[]> getTradeTypes() {
+        return ResponseEntity.ok(tradeService.getPredefinedTradeTypes());
+    }
+
+    @GetMapping("/sorted")
+    public ResponseEntity<Page<TradeDTO>> getSortedTrades(
+            Pageable pageable,
+            @RequestParam(required = false) String status
+    ) {
+        return ResponseEntity.ok(tradeService.getFilteredTrades(pageable, status));
     }
 
     /**
@@ -39,8 +69,7 @@ public class TradeController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<TradeDTO> getTradeById(@PathVariable Long id) {
-        TradeDTO trade = tradeServiceImpl.getTradeById(id);
-        return ResponseEntity.ok(trade);
+        return ResponseEntity.ok(tradeService.getTradeById(id));
     }
 
     /**
@@ -53,18 +82,7 @@ public class TradeController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        Page<TradeDTO> tradesByPortfolioId = tradeServiceImpl.getTradesByPortfolioId(portfolioId, PageRequest.of(page, size));
-        return ResponseEntity.ok(tradesByPortfolioId);
-    }
-
-    /**
-     * POST endpoint for adding a trade.
-     * Validates input and delegates creation to service.
-     */
-    @PostMapping("/save")
-    public ResponseEntity<TradeDTO> addTrade(@Valid @RequestBody TradeDTO tradeDTO) {
-        TradeDTO createdTrade = tradeServiceImpl.addTrade(tradeDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdTrade);
+        return ResponseEntity.ok(tradeService.getTradesByPortfolioId(portfolioId, PageRequest.of(page, size)));
     }
 
     /**
@@ -73,27 +91,25 @@ public class TradeController {
      */
     @PostMapping
     public ResponseEntity<TradeDTO> submitTrade(@Valid @RequestBody TradeDTO tradeDTO) {
-        TradeDTO submittedTrade = tradeServiceImpl.submitTrade(tradeDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(submittedTrade);
+        return ResponseEntity.status(HttpStatus.CREATED).body(tradeService.submitTrade(tradeDTO));
     }
 
     /**
      * PUT endpoint for updating a trade.
      * Delegates to service for business logic.
      */
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<TradeDTO> updateTrade(@PathVariable Long id, @RequestBody TradeDTO tradeDTO) {
-        TradeDTO updatedTrade = tradeServiceImpl.updateTrade(id, tradeDTO);
-        return ResponseEntity.ok(updatedTrade);
+        return ResponseEntity.ok(tradeService.updateTrade(id, tradeDTO));
     }
 
     /**
      * DELETE endpoint for removing a trade.
      * Returns 204 No Content on success.
      */
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTrade(@PathVariable Long id) {
-        tradeServiceImpl.deleteTrade(id);
+        tradeService.deleteTrade(id);
         return ResponseEntity.noContent().build();
     }
 }
