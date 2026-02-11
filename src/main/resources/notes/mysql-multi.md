@@ -34,7 +34,7 @@ cd "C:\Program Files\MySQL\MySQL Server 8.0\bin"
 .\mysqld --defaults-file="C:\ProgramData\MySQL\MySQL Server 8.0\my2.ini" --initialize-insecure --console
 ```
 - **Important**: Used `--defaults-file` (with 's'), not `--default-file`
-- Used `--initialize-insecure` flag (creates root user with no password)
+- Used `--initialize-insecure` flag (creates root portfolioUser with no password)
 
 #### 4. Installed as Windows Service
 ```powershell
@@ -47,11 +47,11 @@ net start MySQL80_Second
 ```
 
 #### 6. Fixed Authentication Issue
-**Problem**: Connection failed with "Access denied for user 'root'@'localhost'"
-- Root cause: `--initialize-insecure` creates root user with NO password
+**Problem**: Connection failed with "Access denied for portfolioUser 'root'@'localhost'"
+- Root cause: `--initialize-insecure` creates root portfolioUser with NO password
 - IntelliJ was trying to connect WITH a password
 
-**Solution**: Set password for root user on second instance
+**Solution**: Set password for root portfolioUser on second instance
 ```powershell
 # Connected to second instance
 .\mysql -u root -P 3307
@@ -206,7 +206,7 @@ Annotate service methods with `@Transactional` and specify the transaction manag
 - **Cause**: Incorrect transaction manager configuration
 - **Solution**: Use `@Transactional` with the correct transaction manager name
 
-#### Issue: Access denied for user 'root'@'localhost'
+#### Issue: Access denied for portfolioUser 'root'@'localhost'
 - **Cause**: Incorrect credentials or uninitialized database
 - **Solution**: Verify credentials and initialize the database. For MySQL, use `--initialize-insecure` if needed
 
