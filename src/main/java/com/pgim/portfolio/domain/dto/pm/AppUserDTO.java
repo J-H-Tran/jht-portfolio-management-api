@@ -1,4 +1,4 @@
-package com.pgim.portfolio.domain.dto.pUser;
+package com.pgim.portfolio.domain.dto.pm;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -12,7 +12,7 @@ import java.util.Set;
  *
  * Security Note: Password is NEVER included in this DTO.
  */
-public record PUserDTO(
+public record AppUserDTO(
     Long id,
     @NotBlank(message = "Username is required")
     @Size(min = 3, max = 100, message = "Username must be between 3 and 100 characters")

@@ -1,6 +1,5 @@
 package com.pgim.portfolio.api.config;
 
-import com.pgim.portfolio.service.pm.impl.UserServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,10 +13,8 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SecurityConfig {
-    private final UserServiceImpl userServiceImpl;
 
-    public SecurityConfig(UserServiceImpl userServiceImpl) {
-        this.userServiceImpl = userServiceImpl;
+    public SecurityConfig() {
     }
 
     @Bean

@@ -2,8 +2,6 @@ package com.pgim.portfolio.domain;
 
 import com.pgim.portfolio.domain.dto.pm.TradeDTO;
 import com.pgim.portfolio.domain.entity.pm.Trade;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 /**
  * TradeMapper is a MapStruct interface for converting between Trade entity and TradeDTO.
@@ -18,20 +16,20 @@ import org.mapstruct.Mapping;
  *   TradeDTO dto = tradeMapper.toDTO(trade);
  *   Trade entity = tradeMapper.toEntity(dto);
  */
-@Mapper(componentModel = "spring") // Bean for spring to manage, update pom xml
+//@Mapper(componentModel = "spring") // Bean for spring to manage, update pom xml
 public interface TradeMapper {
     /**
      * Maps Trade entity to TradeDTO, mapping portfolio.id to portfolioId.
      */
-    @Mapping(source = "portfolio.id", target = "portfolioId")
+//    @Mapping(source = "portfolio.id", target = "portfolioId")
     TradeDTO toDTO(Trade trade);
 
     /**
      * Maps TradeDTO to Trade entity, mapping portfolioId to portfolio.id.
      * Ignores id, createdAt, and updatedAt fields to prevent overwriting system-managed values.
      */
-    @Mapping(source = "portfolioId", target = "portfolio.id")
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
+//    @Mapping(source = "portfolioId", target = "portfolio.id")
+//    @Mapping(target = "createdAt", ignore = true)
+//    @Mapping(target = "updatedAt", ignore = true)
     Trade toEntity(TradeDTO tradeDTO);
 }

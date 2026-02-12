@@ -62,6 +62,14 @@ public class Trade {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public Portfolio getPortfolio() {
         return portfolio;
     }
@@ -70,12 +78,60 @@ public class Trade {
         this.portfolio = portfolio;
     }
 
+    public String getTradeReferenceId() {
+        return tradeReferenceId;
+    }
+
+    public void setTradeReferenceId(String tradeReferenceId) {
+        this.tradeReferenceId = tradeReferenceId;
+    }
+
+    public TradeType getTradeType() {
+        return tradeType;
+    }
+
+    public void setTradeType(TradeType tradeType) {
+        this.tradeType = tradeType;
+    }
+
+    public BigDecimal getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(BigDecimal quantity) {
+        this.quantity = quantity;
+    }
+
     public BigDecimal getPrice() {
         return price;
     }
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public TradeStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(TradeStatus status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public enum TradeStatus {

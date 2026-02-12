@@ -2,8 +2,6 @@ package com.pgim.portfolio.domain;
 
 import com.pgim.portfolio.domain.dto.pm.PortfolioDTO;
 import com.pgim.portfolio.domain.entity.pm.Portfolio;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 /**
  * PortfolioMapper is a MapStruct interface for converting between Portfolio entity and PortfolioDTO.
@@ -18,11 +16,8 @@ import org.mapstruct.Mapping;
  *   PortfolioDTO dto = portfolioMapper.toDTO(portfolio);
  *   Portfolio entity = portfolioMapper.toEntity(dto);
  */
-@Mapper(componentModel = "spring", uses = TradeMapper.class)
+//@Mapper(componentModel = "spring", uses = TradeMapper.class)
 public interface PortfolioMapper {
-    /**
-     * Maps Portfolio entity to PortfolioDTO, including nested trades.
-     */
     PortfolioDTO toDTO(Portfolio portfolio);
 
     /**
@@ -30,8 +25,8 @@ public interface PortfolioMapper {
      * Ignores id, createdAt, and updatedAt fields to prevent overwriting system-managed values.
      * Ignores trades field for clarity and to avoid unintended side effects.
      */
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
+//    @Mapping(target = "id", ignore = true)
+//    @Mapping(target = "createdAt", ignore = true)
+//    @Mapping(target = "updatedAt", ignore = true)
     Portfolio toEntity(PortfolioDTO portfolioDTO);
 }

@@ -1,4 +1,4 @@
-package com.pgim.portfolio.domain.dto.pm;
+package com.pgim.portfolio.domain.dto.auth;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
