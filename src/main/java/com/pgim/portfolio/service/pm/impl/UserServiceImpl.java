@@ -1,6 +1,6 @@
 package com.pgim.portfolio.service.pm.impl;
 
-import com.pgim.portfolio.domain.entity.pm.PortfolioUser;
+import com.pgim.portfolio.domain.entity.pm.PUser;
 import com.pgim.portfolio.repository.pm.UserRepository;
 import com.pgim.portfolio.service.pm.UserService;
 import org.springframework.security.core.userdetails.User;
@@ -19,7 +19,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        PortfolioUser portfolioUser = userRepository.findByUsername(username)
+        PUser portfolioUser = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
         return User
                 .withUsername(portfolioUser.getUsername())

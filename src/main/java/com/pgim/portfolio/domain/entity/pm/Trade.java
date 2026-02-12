@@ -12,7 +12,11 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -21,6 +25,10 @@ import static com.pgim.portfolio.domain.entity.pm.Trade.TradeStatus.PENDING;
 @Entity
 @Table(name = "trades")
 @Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Trade {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

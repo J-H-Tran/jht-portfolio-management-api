@@ -1,6 +1,8 @@
 package com.pgim.portfolio.domain.entity.audit;
 
+import com.pgim.portfolio.api.converter.AuditDetailsConverter;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -9,13 +11,21 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name = "trade_audit")
 @Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class TradeAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,8 +38,9 @@ public class TradeAudit {
     @Column(nullable = false)
     private AuditAction action;
 
+    @Convert(converter = AuditDetailsConverter.class)
     @Column(nullable = false, columnDefinition = "JSON")
-    private String details;
+    private AuditDetails details;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -40,9 +51,8 @@ public class TradeAudit {
     private LocalDateTime updatedAt;
 
     public enum AuditAction {
-        SUBMIT,
-        UPDATE,
-        DELETE,
+        CREATE,
+        ADJUST,
         CANCEL
     }
 }
