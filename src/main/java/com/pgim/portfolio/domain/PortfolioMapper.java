@@ -31,7 +31,6 @@ public interface PortfolioMapper {
      * Ignores trades field for clarity and to avoid unintended side effects.
      */
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "trades", ignore = true) // trades are managed separately or by nested mapping
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     Portfolio toEntity(PortfolioDTO portfolioDTO);

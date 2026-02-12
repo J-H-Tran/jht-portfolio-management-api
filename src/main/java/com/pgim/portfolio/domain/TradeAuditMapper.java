@@ -27,9 +27,6 @@ public interface TradeAuditMapper {
      * Ignores id, createdAt, and updatedAt fields to prevent overwriting system-managed values.
      */
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "tradeId", ignore = true) // set if needed, else ignore
-    @Mapping(target = "action", ignore = true) // set if needed, else ignore
-    @Mapping(target = "details", ignore = true) // set if needed, else ignore
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     TradeAudit toEntity(TradeAuditDTO tradeAuditDTO);

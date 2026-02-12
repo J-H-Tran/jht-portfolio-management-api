@@ -39,7 +39,7 @@ X-CSRF-TOKEN: {{csrf_token}}
 }
 
 ### Update a trade
-PUT http://localhost:8080/v1/api/trades/1
+PUT http://localhost:8080/v1/api/trades/5
 Content-Type: application/json
 Authorization: Basic {{base64_username_password}}
 X-CSRF-TOKEN: {{csrf_token}}
@@ -54,6 +54,6 @@ X-CSRF-TOKEN: {{csrf_token}}
 }
 
 ### Delete a trade
-DELETE http://localhost:8080/v1/api/trades/5
+DELETE http://localhost:8080/v1/api/trades/1
 Authorization: Basic {{base64_username_password}}
 X-CSRF-TOKEN: {{csrf_token}}

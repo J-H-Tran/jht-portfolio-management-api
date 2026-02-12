@@ -2,13 +2,13 @@ package com.pgim.portfolio.domain;
 
 import com.pgim.portfolio.domain.dto.pUser.PUserDTO;
 import com.pgim.portfolio.domain.dto.pUser.UserRegistrationDTO;
-import com.pgim.portfolio.domain.entity.pm.PUser;
 import com.pgim.portfolio.domain.entity.pm.PRole;
-import java.util.Set;
-import java.util.stream.Collectors;
+import com.pgim.portfolio.domain.entity.pm.PUser;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * UserMapper for converting between User entity and DTOs.
@@ -43,15 +43,11 @@ public interface PUserMapper {
      * Note: Password must be hashed in service layer before saving.
      */
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "roles", ignore = true)
     @Mapping(target = "enabled", constant = "true")
     @Mapping(target = "accountNonExpired", constant = "true")
     @Mapping(target = "accountNonLocked", constant = "true")
     @Mapping(target = "credentialsNonExpired", constant = "true")
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
-    @Mapping(target = "lastLogin", ignore = true)
-    @Mapping(target = "authorities", ignore = true)
+    @Mapping(source = "roles", target = "roles", qualifiedByName = "mapRoleNamesToRoles")
     PUser toEntity(UserRegistrationDTO registrationDTO);
 
     /**
@@ -64,6 +60,20 @@ public interface PUserMapper {
         }
         return roles.stream()
                 .map(PRole::getName)
+                .collect(Collectors.toSet());
+    }
+
+    @Named("mapRoleNamesToRoles")
+    default Set<PRole> mapRolesNamesToRoles(Set<String> roleNames) {
+        if (roleNames == null) {
+            return Set.of();
+        }
+        return roleNames.stream()
+                .map(roleName -> {
+                    PRole role = new PRole();
+                    role.setName(roleName);
+                    return role;
+                })
                 .collect(Collectors.toSet());
     }
 }
