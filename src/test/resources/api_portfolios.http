@@ -15,7 +15,7 @@ Authorization: Basic {{base64_username_password}}
 X-CSRF-TOKEN: {{csrf_token}}
 
 ### Create a new portfolio
-POST http://localhost:8080/v1/api/portfolios/save
+POST http://localhost:8080/v1/api/portfolios
 Content-Type: application/json
 Authorization: Basic {{base64_username_password}}
 X-CSRF-TOKEN: {{csrf_token}}
@@ -25,16 +25,16 @@ X-CSRF-TOKEN: {{csrf_token}}
 }
 
 ### Update a portfolio
-PUT http://localhost:8080/v1/api/portfolios/update/1
+PUT http://localhost:8080/v1/api/portfolios/1
 Content-Type: application/json
 Authorization: Basic {{base64_username_password}}
 X-CSRF-TOKEN: {{csrf_token}}
 
 {
-  "name": "Updated Portfolio Name2"
+  "name": "Updated Portfolio 1"
 }
 
 ### Delete a portfolio
-DELETE http://localhost:8080/v1/api/portfolios/delete/4
+DELETE http://localhost:8080/v1/api/portfolios/4
 Authorization: Basic {{base64_username_password}}
 X-CSRF-TOKEN: {{csrf_token}}

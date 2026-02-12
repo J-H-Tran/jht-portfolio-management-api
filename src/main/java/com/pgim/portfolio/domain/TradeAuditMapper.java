@@ -3,6 +3,7 @@ package com.pgim.portfolio.domain;
 import com.pgim.portfolio.domain.dto.audit.TradeAuditDTO;
 import com.pgim.portfolio.domain.entity.audit.TradeAudit;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 /**
  * TradeAuditMapper is a MapStruct interface for converting between TradeAudit entity and TradeAuditDTO.
@@ -23,6 +24,13 @@ public interface TradeAuditMapper {
 
     /**
      * Maps TradeAuditDTO to TradeAudit entity.
+     * Ignores id, createdAt, and updatedAt fields to prevent overwriting system-managed values.
      */
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "tradeId", ignore = true) // set if needed, else ignore
+    @Mapping(target = "action", ignore = true) // set if needed, else ignore
+    @Mapping(target = "details", ignore = true) // set if needed, else ignore
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     TradeAudit toEntity(TradeAuditDTO tradeAuditDTO);
 }

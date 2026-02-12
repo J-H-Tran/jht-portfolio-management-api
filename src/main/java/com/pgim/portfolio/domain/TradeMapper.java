@@ -28,7 +28,17 @@ public interface TradeMapper {
 
     /**
      * Maps TradeDTO to Trade entity, mapping portfolioId to portfolio.id.
+     * Ignores id, createdAt, and updatedAt fields to prevent overwriting system-managed values.
      */
     @Mapping(source = "portfolioId", target = "portfolio.id")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "portfolio", ignore = true) // portfolio is set by id, not by object
+    @Mapping(target = "tradeReferenceId", ignore = true) // set if needed, else ignore
+    @Mapping(target = "tradeType", ignore = true) // set if needed, else ignore
+    @Mapping(target = "quantity", ignore = true) // set if needed, else ignore
+    @Mapping(target = "price", ignore = true) // set if needed, else ignore
+    @Mapping(target = "status", ignore = true) // set if needed, else ignore
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     Trade toEntity(TradeDTO tradeDTO);
 }

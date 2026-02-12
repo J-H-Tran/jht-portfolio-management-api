@@ -21,6 +21,12 @@ import org.mapstruct.Named;
  * Example usage:
  *   UserDTO dto = userMapper.toDTO(user);
  *   User entity = userMapper.toEntity(registrationDTO);
+ *
+ * Best practice is to:
+ * Explicitly map all fields, especially when types differ or when you want to ignore/set defaults.
+ * Use @Mapping(target = "...", ignore = true) for fields not mapped from DTO.
+ * Use @Mapping(target = "...", constant = "...") for fields that should always have a default value.
+ * For collections or nested objects, use @Mapping and qualifiedByName if custom mapping is needed.
  */
 @Mapper(componentModel = "spring")
 public interface PUserMapper {
