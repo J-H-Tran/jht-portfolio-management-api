@@ -2,6 +2,7 @@ package com.pgim.portfolio.service.pm.impl;
 
 import com.pgim.portfolio.domain.TradeMapper;
 import com.pgim.portfolio.domain.dto.pm.TradeDTO;
+import com.pgim.portfolio.domain.entity.audit.AuditDetails;
 import com.pgim.portfolio.domain.entity.pm.Trade;
 import com.pgim.portfolio.repository.pm.TradeRepository;
 import com.pgim.portfolio.service.audit.TradeAuditService;
@@ -14,9 +15,9 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 
-import static com.pgim.portfolio.domain.entity.audit.TradeAudit.AuditAction.DELETE;
-import static com.pgim.portfolio.domain.entity.audit.TradeAudit.AuditAction.SUBMIT;
-import static com.pgim.portfolio.domain.entity.audit.TradeAudit.AuditAction.UPDATE;
+import static com.pgim.portfolio.domain.entity.audit.TradeAudit.AuditAction.ADJUST;
+import static com.pgim.portfolio.domain.entity.audit.TradeAudit.AuditAction.CANCEL;
+import static com.pgim.portfolio.domain.entity.audit.TradeAudit.AuditAction.CREATE;
 
 @Service
 public class TradeServiceImpl implements TradeService {
@@ -90,13 +91,11 @@ public class TradeServiceImpl implements TradeService {
         Trade trade = tradeMapper.toEntity(tradeDTO);
         Trade savedTrade = tradeRepository.save(trade);
 
-        // Publish trade to the database
-//        messageQueuePublisher.publishTrade(savedTrade);
         // Log the trade submission in audit table
         tradeAuditService.logTradeEvent(
             savedTrade.getId(),
-            SUBMIT,
-            "Trade submitted successfully with reference ID: " + savedTrade.getTradeReferenceId()
+            CREATE,
+            setAuditDetails("Trade submitted successfully.", savedTrade.getTradeReferenceId())
         );
         // log submission
         logger.info("Trade submitted successfully: {}", savedTrade);
@@ -112,8 +111,8 @@ public class TradeServiceImpl implements TradeService {
         );
         tradeAuditService.logTradeEvent(
                 id,
-                UPDATE,
-                "Trade update initiated with reference ID: " + existingTrade.getTradeReferenceId()
+                ADJUST,
+                setAuditDetails("Trade update initiated.", existingTrade.getTradeReferenceId())
         );
         // Update trade details
         Trade updateTrade = tradeMapper.toEntity(updateTradeDTO);
@@ -123,8 +122,8 @@ public class TradeServiceImpl implements TradeService {
 
         tradeAuditService.logTradeEvent(
                 id,
-                UPDATE,
-                "Trade updated successfully with reference ID: " + updateTrade.getTradeReferenceId()
+                ADJUST,
+                setAuditDetails("Trade updated successfully.", updateTrade.getTradeReferenceId())
         );
         return tradeMapper.toDTO(savedTrade);
     }
@@ -135,8 +134,8 @@ public class TradeServiceImpl implements TradeService {
     public void deleteTrade(Long id) {
         tradeAuditService.logTradeEvent(
                 id,
-                DELETE,
-                "Trade deleted successfully with reference ID: " + id
+                CANCEL,
+                setAuditDetails("Trade deleted successfully.", String.valueOf(id))
         );
         tradeRepository.deleteById(id);
     }
@@ -155,5 +154,12 @@ public class TradeServiceImpl implements TradeService {
         if (tradeDTO.tradeType() == null) {
             throw new IllegalArgumentException("Trade type must be specified.");
         }
+    }
+
+    private AuditDetails setAuditDetails(String note, String refId) {
+        return AuditDetails.builder()
+                .note(note)
+                .referenceId(refId)
+                .build();
     }
 }

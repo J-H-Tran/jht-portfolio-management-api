@@ -1,7 +1,9 @@
 package com.pgim.portfolio.service.audit.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pgim.portfolio.domain.TradeAuditMapper;
 import com.pgim.portfolio.domain.dto.audit.TradeAuditDTO;
+import com.pgim.portfolio.domain.entity.audit.AuditDetails;
 import com.pgim.portfolio.domain.entity.audit.TradeAudit;
 import com.pgim.portfolio.domain.entity.audit.TradeAudit.AuditAction;
 import com.pgim.portfolio.repository.audit.AuditRepository;
@@ -34,7 +36,7 @@ public class TradeAuditServiceImpl implements TradeAuditService {
      */
     @Override
     @Transactional("auditTransactionManager")
-    public void logTradeEvent(Long tradeId, AuditAction action, String details) {
+    public void logTradeEvent(Long tradeId, AuditAction action, AuditDetails details) {
         // Enforce referential integrity at the application layer
         tradeRepository.findById(tradeId)
                 .orElseThrow(() -> new IllegalArgumentException("Trade not found with id: " + tradeId));
