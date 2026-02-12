@@ -3,8 +3,9 @@ package com.pgim.portfolio.api.controller;
 import com.pgim.portfolio.domain.dto.auth.LoginDTO;
 import com.pgim.portfolio.domain.dto.auth.LoginResponseDTO;
 import com.pgim.portfolio.domain.dto.auth.RegistrationDTO;
+import com.pgim.portfolio.domain.entity.pm.AppRole;
 import com.pgim.portfolio.domain.entity.pm.AppUser;
-import com.pgim.portfolio.domain.entity.pm.AppUser.Role;
+import com.pgim.portfolio.repository.pm.RoleRepository;
 import com.pgim.portfolio.repository.pm.UserRepository;
 import com.pgim.portfolio.service.jwt.JwtService;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @RestController
@@ -28,19 +30,22 @@ public class AuthController {
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
     public AuthController(
             AuthenticationManager authenticationManager,
             JwtService jwtService,
             UserDetailsService userDetailsService,
             PasswordEncoder passwordEncoder,
-            UserRepository userRepository
+            UserRepository userRepository,
+            RoleRepository roleRepository
     ) {
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
     }
 
     /**
@@ -72,11 +77,18 @@ public class AuthController {
             return ResponseEntity.badRequest().body("Username already exists");
         }
 
+        // Get USER role from database
+        AppRole userRole = roleRepository.findByName("USER")
+                .orElseThrow(() -> new RuntimeException("USER role not found"));
+
         // Create new user
         AppUser user = new AppUser();
         user.setUsername(request.username());
+        user.setEmail(request.email());
         user.setPassword(passwordEncoder.encode(request.password())); // Hash password
-        user.setRoles(Set.of(Role.USER)); // Default role
+        user.setFirstName(request.firstName());
+        user.setLastName(request.lastName());
+        user.setRoles(new HashSet<>(Set.of(userRole))); // Assign USER role from database
 
         userRepository.save(user);
 

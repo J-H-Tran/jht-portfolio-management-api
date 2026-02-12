@@ -45,7 +45,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .authorizeHttpRequests(auth -> auth
 //              .requestMatchers(HttpMethod.DELETE).hasRole("ADMIN")  // restrict delete to ADMIN
-                        .requestMatchers("/auth").permitAll()     // unrestrict portfolios
+                        .requestMatchers("/api/auth/**").permitAll()     // Allow all auth endpoints
                         .requestMatchers("v1/api/admin/**").hasRole("ADMIN")     // restrict admin endpoints to ADMIN
                         .anyRequest().authenticated()
                 )
@@ -61,7 +61,7 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder(12);
     }
 
     @Bean
@@ -71,8 +71,7 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(); // DaoAuthenticationProvider() is deprecated
-        authProvider.setUserDetailsService(userDetailsService); // setUserDetailsService() is deprecated
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }

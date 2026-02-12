@@ -1,24 +1,38 @@
-### get csrf token
-GET http://localhost:8080/csrf
-Authorization: Basic {{base64_username_password}}
+### get JWT token
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
 
-> {% client.global.set("csrf_token", response.body.csrfToken); %}
+{
+  "username": "testuser",
+  "password": "password123"
+}
+
+> {% client.global.set("jwtToken", response.body.token); %}
+
+### Register a new user
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "email": "testuser@example.com",
+  "password": "password123",
+  "firstName": "Test",
+  "lastName": "User"
+}
 
 ### Get all portfolios (paginated)
 GET http://localhost:8080/v1/api/portfolios?page=0&size=10
-Authorization: Basic {{base64_username_password}}
-X-CSRF-TOKEN: {{csrf_token}}
+Authorization: Bearer {{jwtToken}}
 
 ### Get portfolio by ID
 GET http://localhost:8080/v1/api/portfolios/1
-Authorization: Basic {{base64_username_password}}
-X-CSRF-TOKEN: {{csrf_token}}
+Authorization: Bearer {{jwtToken}}
 
 ### Create a new portfolio
 POST http://localhost:8080/v1/api/portfolios
 Content-Type: application/json
-Authorization: Basic {{base64_username_password}}
-X-CSRF-TOKEN: {{csrf_token}}
+Authorization: Bearer {{jwtToken}}
 
 {
   "name": "Sample Portfolio 1"
@@ -27,8 +41,7 @@ X-CSRF-TOKEN: {{csrf_token}}
 ### Update a portfolio
 PUT http://localhost:8080/v1/api/portfolios/1
 Content-Type: application/json
-Authorization: Basic {{base64_username_password}}
-X-CSRF-TOKEN: {{csrf_token}}
+Authorization: Bearer {{jwtToken}}
 
 {
   "name": "Updated Portfolio 1"
@@ -36,5 +49,4 @@ X-CSRF-TOKEN: {{csrf_token}}
 
 ### Delete a portfolio
 DELETE http://localhost:8080/v1/api/portfolios/4
-Authorization: Basic {{base64_username_password}}
-X-CSRF-TOKEN: {{csrf_token}}
+Authorization: Bearer {{jwtToken}}
