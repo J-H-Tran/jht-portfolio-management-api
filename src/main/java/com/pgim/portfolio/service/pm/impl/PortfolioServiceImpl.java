@@ -1,16 +1,12 @@
 package com.pgim.portfolio.service.pm.impl;
 
-import com.pgim.portfolio.domain.dto.pm.PortfolioDTO;
 import com.pgim.portfolio.domain.PortfolioMapper;
+import com.pgim.portfolio.domain.dto.pm.PortfolioDTO;
 import com.pgim.portfolio.domain.dto.pm.TradeDTO;
 import com.pgim.portfolio.domain.entity.pm.Portfolio;
 import com.pgim.portfolio.domain.entity.pm.Trade;
 import com.pgim.portfolio.repository.pm.PortfolioRepository;
 import com.pgim.portfolio.service.pm.PortfolioService;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -18,6 +14,13 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static com.pgim.portfolio.api.constant.CommonConstants.PORTFOLIO_TRANSACTION_MANAGER;
 
 @Service
 public class PortfolioServiceImpl implements PortfolioService {
@@ -79,7 +82,7 @@ public class PortfolioServiceImpl implements PortfolioService {
      * @Transactional ensures atomicity and consistency for the upsert logic.
      * Existing trades are updated, new trades are added, and all are linked to the portfolio.
      */
-    @Transactional(transactionManager = "pmTransactionManager") // Ensures all changes are committed or rolled back together
+    @Transactional(transactionManager = PORTFOLIO_TRANSACTION_MANAGER) // Ensures all changes are committed or rolled back together
     public PortfolioDTO updatePortfolio(Long portfolioId, PortfolioDTO portfolioDTO) {
         // Fetch the existing portfolio, throws if not found
         Portfolio portfolio = getExistingPortfolio(portfolioId);

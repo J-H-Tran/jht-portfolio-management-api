@@ -1,7 +1,6 @@
 package com.pgim.portfolio.api.config;
 
 import jakarta.persistence.EntityManagerFactory;
-import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -17,6 +16,9 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import javax.sql.DataSource;
+
+import static com.pgim.portfolio.api.constant.CommonConstants.*;
 import static com.pgim.portfolio.api.util.SqlScriptExecutor.executeSqlScript;
 
 /**
@@ -36,17 +38,17 @@ import static com.pgim.portfolio.api.util.SqlScriptExecutor.executeSqlScript;
  */
 @Configuration
 @EnableJpaRepositories(
-        basePackages = "com.pgim.portfolio.repository.pm", // package for secondary repos
-        entityManagerFactoryRef = "pmEntityManagerFactory",
-        transactionManagerRef = "pmTransactionManager"
+        basePackages = PORTFOLIO_REPOSITORY_PACKAGE, // package for secondary repos
+        entityManagerFactoryRef = PORTFOLIO_ENTITY_MANAGER_FACTORY,
+        transactionManagerRef = PORTFOLIO_TRANSACTION_MANAGER
 )
-@EntityScan(basePackages = "com.pgim.portfolio.domain.entity.pm")
+@EntityScan(basePackages = PORTFOLIO_ENTITY_PACKAGE)
 public class PmDataSourceConfig {
     /**
      * Defines the secondary DataSource bean.
      * Properties are loaded from application.yml (spring.datasource).
      */
-    @Bean(name = "pmDataSource")
+    @Bean(name = PORTFOLIO_DATASOURCE)
     @Primary // Mark this as the default
     @ConfigurationProperties(prefix = "spring.datasource")
     public DataSource pmDataSource() {
@@ -58,13 +60,13 @@ public class PmDataSourceConfig {
      * Points to the entity package for pm entities.
      */
     @Primary
-    @Bean(name = "pmEntityManagerFactory")
+    @Bean(name = PORTFOLIO_ENTITY_MANAGER_FACTORY)
     public LocalContainerEntityManagerFactoryBean pmEntityManagerFactory(
             EntityManagerFactoryBuilder builder
     ) {
         return builder
                 .dataSource(pmDataSource())
-                .packages("com.pgim.portfolio.domain.entity.pm")
+                .packages(PORTFOLIO_ENTITY_PACKAGE)
                 .persistenceUnit("pm")
                 .build();
     }
@@ -74,16 +76,18 @@ public class PmDataSourceConfig {
      * Ensures transactions are managed separately from the primary DB.
      */
     @Primary
-    @Bean(name = "pmTransactionManager")
+    @Bean(name = PORTFOLIO_TRANSACTION_MANAGER)
     public PlatformTransactionManager pmTransactionManager(
-            @Qualifier("pmEntityManagerFactory")
+            @Qualifier(PORTFOLIO_ENTITY_MANAGER_FACTORY)
             EntityManagerFactory pmEntityManagerFactory
     ) {
         return new JpaTransactionManager(pmEntityManagerFactory);
     }
 
     @Bean
-    public ApplicationRunner pmDataInitializer(@Qualifier("pmDataSource") DataSource pmDataSource) {
+    public ApplicationRunner pmDataInitializer(
+            @Qualifier(PORTFOLIO_DATASOURCE) DataSource pmDataSource
+    ) {
         return args -> {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(pmDataSource);
             executeSqlScript(jdbcTemplate, "schema-pm.sql");

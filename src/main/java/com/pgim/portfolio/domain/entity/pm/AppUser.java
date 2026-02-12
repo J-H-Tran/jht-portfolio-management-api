@@ -15,6 +15,7 @@ import jakarta.persistence.Table;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -60,6 +61,34 @@ public class AppUser implements UserDetails {
 
     @Override
     public boolean isEnabled() { return enabled; }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 
     public enum Role {
         USER, ADMIN, MANAGER

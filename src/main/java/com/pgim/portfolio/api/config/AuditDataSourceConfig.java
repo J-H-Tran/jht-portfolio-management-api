@@ -1,7 +1,6 @@
 package com.pgim.portfolio.api.config;
 
 import jakarta.persistence.EntityManagerFactory;
-import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -16,6 +15,14 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import javax.sql.DataSource;
+
+import static com.pgim.portfolio.api.constant.CommonConstants.AUDIT_DATASOURCE;
+import static com.pgim.portfolio.api.constant.CommonConstants.AUDIT_ENTITY_MANAGER_FACTORY;
+import static com.pgim.portfolio.api.constant.CommonConstants.AUDIT_ENTITY_PACKAGE;
+import static com.pgim.portfolio.api.constant.CommonConstants.AUDIT_REPOSITORY_PACKAGE;
+import static com.pgim.portfolio.api.constant.CommonConstants.AUDIT_SPRING_DATASOURCE;
+import static com.pgim.portfolio.api.constant.CommonConstants.AUDIT_TRANSACTION_MANAGER;
 import static com.pgim.portfolio.api.util.SqlScriptExecutor.executeSqlScript;
 
 /**
@@ -35,18 +42,20 @@ import static com.pgim.portfolio.api.util.SqlScriptExecutor.executeSqlScript;
  */
 @Configuration
 @EnableJpaRepositories(
-        basePackages = "com.pgim.portfolio.repository.audit", // package for secondary repos
-        entityManagerFactoryRef = "auditEntityManagerFactory",
-        transactionManagerRef = "auditTransactionManager"
+        basePackages = AUDIT_REPOSITORY_PACKAGE, // package for secondary repos
+        entityManagerFactoryRef = AUDIT_ENTITY_MANAGER_FACTORY,
+        transactionManagerRef = AUDIT_TRANSACTION_MANAGER
 )
-@EntityScan(basePackages = "com.pgim.portfolio.domain.entity.audit")
+@EntityScan(basePackages = AUDIT_ENTITY_PACKAGE)
 public class AuditDataSourceConfig {
+
+
     /**
      * Defines the secondary DataSource bean.
      * Properties are loaded from application.yml (spring.audit-datasource).
      */
-    @Bean(name = "auditDataSource")
-    @ConfigurationProperties(prefix = "spring.datasource.audit")
+    @Bean(name = AUDIT_DATASOURCE)
+    @ConfigurationProperties(prefix = AUDIT_SPRING_DATASOURCE)
     public DataSource auditDataSource() {
         return DataSourceBuilder.create().build();
     }
@@ -55,14 +64,14 @@ public class AuditDataSourceConfig {
      * Defines the EntityManagerFactory for the secondary DB.
      * Points to the entity package for audit entities.
      */
-    @Bean(name = "auditEntityManagerFactory")
+    @Bean(name = AUDIT_ENTITY_MANAGER_FACTORY)
     public LocalContainerEntityManagerFactoryBean auditEntityManagerFactory(
             EntityManagerFactoryBuilder builder,
-            @Qualifier("auditDataSource") DataSource auditDataSource
+            @Qualifier(AUDIT_DATASOURCE) DataSource auditDataSource
     ) {
         return builder
                 .dataSource(auditDataSource)
-                .packages("com.pgim.portfolio.domain.entity.audit")
+                .packages(AUDIT_ENTITY_PACKAGE)
                 .persistenceUnit("audit")
                 .build();
     }
@@ -71,16 +80,18 @@ public class AuditDataSourceConfig {
      * Defines the TransactionManager for the secondary DB.
      * Ensures transactions are managed separately from the primary DB.
      */
-    @Bean(name = "auditTransactionManager")
+    @Bean(name = AUDIT_TRANSACTION_MANAGER)
     public PlatformTransactionManager auditTransactionManager(
-            @Qualifier("auditEntityManagerFactory")
+            @Qualifier(AUDIT_ENTITY_MANAGER_FACTORY)
             EntityManagerFactory auditEntityManagerFactory
     ) {
         return new JpaTransactionManager(auditEntityManagerFactory);
     }
 
     @Bean
-    public ApplicationRunner auditDbInitializer(@Qualifier("auditDataSource") DataSource auditDataSource) {
+    public ApplicationRunner auditDbInitializer(
+            @Qualifier(AUDIT_DATASOURCE) DataSource auditDataSource
+    ) {
         return args -> {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(auditDataSource);
             executeSqlScript(jdbcTemplate, "schema-audit.sql");

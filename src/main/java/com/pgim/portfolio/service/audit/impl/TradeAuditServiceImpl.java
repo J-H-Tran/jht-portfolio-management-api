@@ -1,6 +1,5 @@
 package com.pgim.portfolio.service.audit.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pgim.portfolio.domain.TradeAuditMapper;
 import com.pgim.portfolio.domain.dto.audit.TradeAuditDTO;
 import com.pgim.portfolio.domain.entity.audit.AuditDetails;
@@ -9,10 +8,13 @@ import com.pgim.portfolio.domain.entity.audit.TradeAudit.AuditAction;
 import com.pgim.portfolio.repository.audit.AuditRepository;
 import com.pgim.portfolio.repository.pm.TradeRepository;
 import com.pgim.portfolio.service.audit.TradeAuditService;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.pgim.portfolio.api.constant.CommonConstants.AUDIT_TRANSACTION_MANAGER;
 
 @Service
 public class TradeAuditServiceImpl implements TradeAuditService {
@@ -35,7 +37,7 @@ public class TradeAuditServiceImpl implements TradeAuditService {
      * Ensures the trade exists in the main DB before logging.
      */
     @Override
-    @Transactional("auditTransactionManager")
+    @Transactional(AUDIT_TRANSACTION_MANAGER)
     public void logTradeEvent(Long tradeId, AuditAction action, AuditDetails details) {
         // Enforce referential integrity at the application layer
         tradeRepository.findById(tradeId)
