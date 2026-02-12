@@ -3,6 +3,7 @@ package com.pgim.portfolio.api.config;
 import jakarta.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -10,9 +11,12 @@ import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
+
+import static com.pgim.portfolio.api.util.SqlScriptExecutor.executeSqlScript;
 
 /**
  * SecondaryDataSourceConfig demonstrates how to configure a second database connection in Spring Boot.
@@ -75,4 +79,12 @@ public class AuditDataSourceConfig {
         return new JpaTransactionManager(auditEntityManagerFactory);
     }
 
+    @Bean
+    public ApplicationRunner auditDbInitializer(@Qualifier("auditDataSource") DataSource auditDataSource) {
+        return args -> {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(auditDataSource);
+            executeSqlScript(jdbcTemplate, "schema-audit.sql");
+            executeSqlScript(jdbcTemplate, "data-audit.sql");
+        };
+    }
 }

@@ -3,6 +3,7 @@ package com.pgim.portfolio.api.config;
 import jakarta.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -11,9 +12,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
+
+import static com.pgim.portfolio.api.util.SqlScriptExecutor.executeSqlScript;
 
 /**
  * PrimaryDataSourceConfig demonstrates how to configure a second database connection in Spring Boot.
@@ -53,6 +57,7 @@ public class PmDataSourceConfig {
      * Defines the EntityManagerFactory for the secondary DB.
      * Points to the entity package for pm entities.
      */
+    @Primary
     @Bean(name = "pmEntityManagerFactory")
     public LocalContainerEntityManagerFactoryBean pmEntityManagerFactory(
             EntityManagerFactoryBuilder builder
@@ -68,11 +73,21 @@ public class PmDataSourceConfig {
      * Defines the TransactionManager for the secondary DB.
      * Ensures transactions are managed separately from the primary DB.
      */
+    @Primary
     @Bean(name = "pmTransactionManager")
     public PlatformTransactionManager pmTransactionManager(
             @Qualifier("pmEntityManagerFactory")
             EntityManagerFactory pmEntityManagerFactory
     ) {
         return new JpaTransactionManager(pmEntityManagerFactory);
+    }
+
+    @Bean
+    public ApplicationRunner pmDataInitializer(@Qualifier("pmDataSource") DataSource pmDataSource) {
+        return args -> {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(pmDataSource);
+            executeSqlScript(jdbcTemplate, "schema-pm.sql");
+            executeSqlScript(jdbcTemplate, "data-pm.sql");
+        };
     }
 }
