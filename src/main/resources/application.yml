@@ -1,14 +1,16 @@
 spring:
+  config:
+    imoprt: "optional:classpath:.env[.properties]"
   application:
     name: portfolio-api
   datasource:
     jdbcUrl: jdbc:mysql://localhost:3306/portfolio_db
-    username: root
-    password: ${DB_PASSWORD}
+    username: ${PM_DB_USERNAME}
+    password: ${PM_DB_PASSWORD}
     audit:
       jdbcUrl: jdbc:mysql://localhost:3307/audit_db
-      username: root
-      password: ${DB_AUDIT_PASSWORD}
+      username: ${AUDIT_DB_USERNAME}
+      password: ${AUDIT_DB_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update
@@ -18,8 +20,8 @@ spring:
     open-in-view: false # open-in-view disabled for multi-datasource compliance.
   security:
     user:
-      name: root
-      password: root
+      name: ${SPRING_SECURITY_USERNAME}
+      password: ${SPRING_SECURITY_PASSWORD}
 
 server:
   port: 8080
