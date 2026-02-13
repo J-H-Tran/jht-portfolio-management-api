@@ -3,10 +3,12 @@ package com.pgim.portfolio.api.controller;
 import com.pgim.portfolio.domain.dto.auth.LoginDTO;
 import com.pgim.portfolio.domain.dto.auth.LoginResponseDTO;
 import com.pgim.portfolio.domain.dto.auth.RegistrationDTO;
-import com.pgim.portfolio.domain.entity.pm.AppRole;
-import com.pgim.portfolio.domain.entity.pm.AppUser;
+import com.pgim.portfolio.domain.entity.appuser.AppUser;
+import com.pgim.portfolio.domain.entity.appuser.AppUserRole;
+import com.pgim.portfolio.domain.entity.pm.AuthRole;
+import com.pgim.portfolio.repository.appuser.UserRepository;
+import com.pgim.portfolio.repository.appuser.UserRoleRepository;
 import com.pgim.portfolio.repository.pm.RoleRepository;
-import com.pgim.portfolio.repository.pm.UserRepository;
 import com.pgim.portfolio.service.jwt.JwtService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,32 +21,32 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
     private final AuthenticationManager authenticationManager;
+    private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
-    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final UserRoleRepository userRoleRepository;
     private final RoleRepository roleRepository;
 
     public AuthController(
             AuthenticationManager authenticationManager,
+            PasswordEncoder passwordEncoder,
             JwtService jwtService,
             UserDetailsService userDetailsService,
-            PasswordEncoder passwordEncoder,
             UserRepository userRepository,
+            UserRoleRepository userRoleRepository,
             RoleRepository roleRepository
     ) {
         this.authenticationManager = authenticationManager;
+        this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
-        this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
+        this.userRoleRepository = userRoleRepository;
         this.roleRepository = roleRepository;
     }
 
@@ -57,10 +59,8 @@ public class AuthController {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.username(), request.password())
         );
-
         // Load user details
         UserDetails userDetails = userDetailsService.loadUserByUsername(request.username());
-
         // Generate JWT
         String jwt = jwtService.generateToken(userDetails);
 
@@ -77,8 +77,8 @@ public class AuthController {
             return ResponseEntity.badRequest().body("Username already exists");
         }
 
-        // Get USER role from database
-        AppRole userRole = roleRepository.findByName("USER")
+        // Get USER role from database, so every user that register will be a ROLE_USER, managers and admins will have their accounts created internally
+        AuthRole userRole = roleRepository.findByName("USER")
                 .orElseThrow(() -> new RuntimeException("USER role not found"));
 
         // Create new user
@@ -88,9 +88,13 @@ public class AuthController {
         user.setPassword(passwordEncoder.encode(request.password())); // Hash password
         user.setFirstName(request.firstName());
         user.setLastName(request.lastName());
-        user.setRoles(new HashSet<>(Set.of(userRole))); // Assign USER role from database
-
+        user.setEnabled(true);
         userRepository.save(user);
+
+        AppUserRole appUserRole = new AppUserRole();
+        appUserRole.setUserId(user.getId());
+        appUserRole.setRoleId(userRole.getId());
+        userRoleRepository.save(appUserRole);
 
         return ResponseEntity.ok("User registered successfully");
     }

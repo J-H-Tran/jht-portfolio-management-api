@@ -7,11 +7,18 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
-@Table(name = "roles", indexes = @Index(name = "idx_name", columnList = "name"))
-public class AppRole {
+@Table(name = "auth_roles", indexes = @Index(name = "idx_name", columnList = "name"))
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class AuthRole {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,19 +32,15 @@ public class AppRole {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    // Constructors
-    public AppRole() {}
-
-    public AppRole(String name) {
+    public AuthRole(String name) {
         this.name = name;
     }
 
-    public AppRole(String name, String description) {
+    public AuthRole(String name, String description) {
         this.name = name;
         this.description = description;
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -68,6 +71,19 @@ public class AppRole {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AuthRole authRole = (AuthRole) o;
+        return Objects.equals(id, authRole.id) && Objects.equals(name, authRole.name) && Objects.equals(description, authRole.description) && Objects.equals(createdAt, authRole.createdAt);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, description, createdAt);
     }
 
     @Override
