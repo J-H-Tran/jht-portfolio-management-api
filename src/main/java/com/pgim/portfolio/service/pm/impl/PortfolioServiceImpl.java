@@ -46,11 +46,11 @@ public class PortfolioServiceImpl implements PortfolioService {
      */
     public Page<PortfolioDTO> getAllPortfolios(Pageable pageable) {
         logger.info("Getting all portfolios");
-        List<Portfolio> portfolios = portfolioRepository.findAllWithTrades();
-        List<PortfolioDTO> portfolioDTOs = portfolios.stream()
+        Page<Portfolio> portfolios = portfolioRepository.findAllWithTrades(pageable);
+        List<PortfolioDTO> portfolioDTOs = portfolios.getContent().stream()
                 .map(portfolioMapper::toDTO)
                 .collect(Collectors.toList());
-        return new PageImpl<>(portfolioDTOs, pageable, portfolioDTOs.size());
+        return new PageImpl<>(portfolioDTOs, pageable, portfolios.getTotalElements());
     }
 
     /**
