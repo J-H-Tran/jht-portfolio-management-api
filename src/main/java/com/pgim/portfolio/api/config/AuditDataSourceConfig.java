@@ -18,7 +18,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import javax.sql.DataSource;
 
 import static com.pgim.portfolio.api.constant.CommonConstants.AUDIT_DATASOURCE;
-import static com.pgim.portfolio.api.constant.CommonConstants.AUDIT_ENTITY_MANAGER_FACTORY;
+import static com.pgim.portfolio.api.constant.CommonConstants.AUDIT_ENTITY_MANAGER;
 import static com.pgim.portfolio.api.constant.CommonConstants.AUDIT_ENTITY_PACKAGE;
 import static com.pgim.portfolio.api.constant.CommonConstants.AUDIT_REPOSITORY_PACKAGE;
 import static com.pgim.portfolio.api.constant.CommonConstants.AUDIT_SPRING_DATASOURCE;
@@ -43,13 +43,11 @@ import static com.pgim.portfolio.api.util.SqlScriptExecutor.executeSqlScript;
 @Configuration
 @EnableJpaRepositories(
         basePackages = AUDIT_REPOSITORY_PACKAGE, // package for secondary repos
-        entityManagerFactoryRef = AUDIT_ENTITY_MANAGER_FACTORY,
+        entityManagerFactoryRef = AUDIT_ENTITY_MANAGER,
         transactionManagerRef = AUDIT_TRANSACTION_MANAGER
 )
 @EntityScan(basePackages = AUDIT_ENTITY_PACKAGE)
 public class AuditDataSourceConfig {
-
-
     /**
      * Defines the secondary DataSource bean.
      * Properties are loaded from application.yml (spring.audit-datasource).
@@ -64,7 +62,7 @@ public class AuditDataSourceConfig {
      * Defines the EntityManagerFactory for the secondary DB.
      * Points to the entity package for audit entities.
      */
-    @Bean(name = AUDIT_ENTITY_MANAGER_FACTORY)
+    @Bean(name = AUDIT_ENTITY_MANAGER)
     public LocalContainerEntityManagerFactoryBean auditEntityManagerFactory(
             EntityManagerFactoryBuilder builder,
             @Qualifier(AUDIT_DATASOURCE) DataSource auditDataSource
@@ -82,7 +80,7 @@ public class AuditDataSourceConfig {
      */
     @Bean(name = AUDIT_TRANSACTION_MANAGER)
     public PlatformTransactionManager auditTransactionManager(
-            @Qualifier(AUDIT_ENTITY_MANAGER_FACTORY)
+            @Qualifier(AUDIT_ENTITY_MANAGER)
             EntityManagerFactory auditEntityManagerFactory
     ) {
         return new JpaTransactionManager(auditEntityManagerFactory);

@@ -39,7 +39,7 @@ import static com.pgim.portfolio.api.util.SqlScriptExecutor.executeSqlScript;
 @Configuration
 @EnableJpaRepositories(
         basePackages = PORTFOLIO_REPOSITORY_PACKAGE, // package for secondary repos
-        entityManagerFactoryRef = PORTFOLIO_ENTITY_MANAGER_FACTORY,
+        entityManagerFactoryRef = PORTFOLIO_ENTITY_MANAGER,
         transactionManagerRef = PORTFOLIO_TRANSACTION_MANAGER
 )
 @EntityScan(basePackages = PORTFOLIO_ENTITY_PACKAGE)
@@ -60,7 +60,7 @@ public class PmDataSourceConfig {
      * Points to the entity package for pm entities.
      */
     @Primary
-    @Bean(name = PORTFOLIO_ENTITY_MANAGER_FACTORY)
+    @Bean(name = PORTFOLIO_ENTITY_MANAGER)
     public LocalContainerEntityManagerFactoryBean pmEntityManagerFactory(
             EntityManagerFactoryBuilder builder
     ) {
@@ -78,7 +78,7 @@ public class PmDataSourceConfig {
     @Primary
     @Bean(name = PORTFOLIO_TRANSACTION_MANAGER)
     public PlatformTransactionManager pmTransactionManager(
-            @Qualifier(PORTFOLIO_ENTITY_MANAGER_FACTORY)
+            @Qualifier(PORTFOLIO_ENTITY_MANAGER)
             EntityManagerFactory pmEntityManagerFactory
     ) {
         return new JpaTransactionManager(pmEntityManagerFactory);

@@ -1,7 +1,7 @@
 package com.pgim.portfolio.api.filter;
 
 import com.pgim.portfolio.service.jwt.JwtService;
-import com.pgim.portfolio.service.pm.impl.UserDetailsServiceImpl;
+import com.pgim.portfolio.service.appuser.impl.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
