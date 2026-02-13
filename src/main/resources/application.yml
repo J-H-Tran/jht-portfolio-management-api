@@ -17,12 +17,18 @@ spring:
       username: ${AUDIT_DB_USERNAME}
       password: ${AUDIT_DB_PASSWORD}
 
+    # Tertiary DataSource (User)
+    appuser:
+      jdbcUrl: jdbc:mysql://localhost:3308/appuser_db
+      username: ${USER_DB_USERNAME}
+      password: ${USER_DB_PASSWORD}
+
   # JPA Configuration
   jpa:
     hibernate:
       # IMPORTANT: Use 'create' to recreate tables on startup (development only)
       # Use 'validate' in production
-      ddl-auto: create
+      ddl-auto: create-drop
     show-sql: true
     properties:
       hibernate:
