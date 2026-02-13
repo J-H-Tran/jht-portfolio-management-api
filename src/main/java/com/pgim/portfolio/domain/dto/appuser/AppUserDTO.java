@@ -1,4 +1,4 @@
-package com.pgim.portfolio.domain.dto.pm;
+package com.pgim.portfolio.domain.dto.appuser;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
